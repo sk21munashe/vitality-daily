@@ -114,14 +114,13 @@ export default function WaterTracker() {
           <Droplets className="w-5 h-5 text-water" />
           Add Water
         </h2>
-        <div className="grid grid-cols-4 gap-2">
+        <div className="grid grid-cols-4 gap-2 relative z-10">
           {[250, 500, 750, 1000].map((amount) => (
-            <motion.button
+            <Button
               key={amount}
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
+              variant="outline"
               onClick={() => handleAddWater(amount)}
-              className="p-4 rounded-2xl bg-water-light hover:bg-water/20 transition-colors text-center"
+              className="p-4 h-auto rounded-2xl bg-water/10 border-water/30 hover:bg-water/20 transition-colors text-center flex flex-col"
             >
               <span className="block text-lg font-bold text-water">
                 {amount >= 1000 ? `${amount / 1000}L` : `${amount}ml`}
@@ -129,7 +128,7 @@ export default function WaterTracker() {
               <span className="text-xs text-muted-foreground">
                 {Math.round(amount / 250)} glass{amount > 250 ? 'es' : ''}
               </span>
-            </motion.button>
+            </Button>
           ))}
         </div>
         <Button
