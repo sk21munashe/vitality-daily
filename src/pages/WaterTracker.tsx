@@ -99,6 +99,66 @@ export default function WaterTracker() {
         </div>
       </header>
 
+      {/* Water Summary Card with Progress */}
+      <div className="px-5 mb-4">
+        <DashboardCard className="glass-water">
+          <div className="flex items-center gap-4">
+            {/* Circular Progress */}
+            <div className="relative w-20 h-20 flex-shrink-0">
+              <svg className="w-20 h-20 -rotate-90" viewBox="0 0 80 80">
+                <circle
+                  cx="40"
+                  cy="40"
+                  r="35"
+                  stroke="currentColor"
+                  strokeWidth="6"
+                  fill="none"
+                  className="text-water/20"
+                />
+                <motion.circle
+                  cx="40"
+                  cy="40"
+                  r="35"
+                  stroke="currentColor"
+                  strokeWidth="6"
+                  fill="none"
+                  strokeLinecap="round"
+                  className="text-water"
+                  initial={{ strokeDasharray: "0 220" }}
+                  animate={{
+                    strokeDasharray: `${Math.min((todayWater / profile.goals.waterGoal) * 220, 220)} 220`
+                  }}
+                  transition={{ duration: 1, ease: "easeOut" }}
+                />
+              </svg>
+              <div className="absolute inset-0 flex items-center justify-center">
+                <span className="text-lg font-bold text-water">
+                  {Math.min(Math.round((todayWater / profile.goals.waterGoal) * 100), 100)}%
+                </span>
+              </div>
+            </div>
+            
+            {/* Summary Text */}
+            <div className="flex-1">
+              <h3 className="text-sm text-muted-foreground mb-1">Today's Intake</h3>
+              <div className="flex items-baseline gap-1">
+                <span className="text-3xl font-bold text-water">
+                  {(todayWater / 1000).toFixed(1)}
+                </span>
+                <span className="text-lg text-muted-foreground">
+                  / {profile.goals.waterGoal / 1000}L
+                </span>
+              </div>
+              <p className="text-xs text-muted-foreground mt-1">
+                {todayWater >= profile.goals.waterGoal 
+                  ? "🎉 Goal reached!" 
+                  : `${profile.goals.waterGoal - todayWater}ml to go`
+                }
+              </p>
+            </div>
+          </div>
+        </DashboardCard>
+      </div>
 
       {/* Quick Add Buttons */}
       <div className="px-5 mb-6">
