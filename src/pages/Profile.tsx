@@ -54,8 +54,8 @@ export default function Profile() {
   return (
     <div className="h-full flex flex-col bg-background pb-4 overflow-y-auto">
       {/* Header */}
-      <header className="pt-6 pb-4 px-5">
-        <div className="flex items-center gap-4">
+      <header className="pt-4 sm:pt-6 pb-3 sm:pb-4 px-4 sm:px-5 md:px-8">
+        <div className="flex items-center gap-3 sm:gap-4">
           <button
             onClick={() => navigate('/')}
             className="p-2 rounded-xl hover:bg-muted transition-colors"
@@ -63,38 +63,38 @@ export default function Profile() {
             <ChevronLeft className="w-5 h-5" />
           </button>
           <div className="flex-1">
-            <h1 className="text-2xl font-bold">Profile</h1>
+            <h1 className="text-xl sm:text-2xl font-bold">Profile</h1>
           </div>
         </div>
       </header>
 
       {/* Profile Card */}
-      <DashboardCard className="mx-5 mb-6">
-        <div className="flex items-center gap-4">
-          <div className="w-20 h-20 rounded-full bg-gradient-to-br from-primary to-primary/60 flex items-center justify-center">
-            <User className="w-10 h-10 text-primary-foreground" />
+      <DashboardCard className="mx-4 sm:mx-5 md:mx-8 mb-4 sm:mb-6">
+        <div className="flex items-center gap-3 sm:gap-4">
+          <div className="w-14 h-14 sm:w-20 sm:h-20 rounded-full bg-gradient-to-br from-primary to-primary/60 flex items-center justify-center flex-shrink-0">
+            <User className="w-7 h-7 sm:w-10 sm:h-10 text-primary-foreground" />
           </div>
-          <div className="flex-1">
+          <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2">
-              <h2 className="text-xl font-bold">{profile.name}</h2>
+              <h2 className="text-lg sm:text-xl font-bold truncate">{profile.name}</h2>
               <button
                 onClick={() => {
                   setEditName(profile.name);
                   setShowEditProfile(true);
                 }}
-                className="p-1 rounded hover:bg-muted"
+                className="p-1 rounded hover:bg-muted flex-shrink-0"
               >
                 <Edit2 className="w-4 h-4 text-muted-foreground" />
               </button>
             </div>
-            <div className="flex items-center gap-4 mt-2">
+            <div className="flex items-center gap-3 sm:gap-4 mt-2 flex-wrap">
               <div className="flex items-center gap-1">
                 <Flame className="w-4 h-4 text-orange-500" />
-                <span className="text-sm font-medium">{profile.streak} day streak</span>
+                <span className="text-xs sm:text-sm font-medium">{profile.streak} day streak</span>
               </div>
               <div className="flex items-center gap-1">
                 <Star className="w-4 h-4 text-purple-500" />
-                <span className="text-sm font-medium">{profile.totalPoints} pts</span>
+                <span className="text-xs sm:text-sm font-medium">{profile.totalPoints} pts</span>
               </div>
             </div>
           </div>
@@ -102,25 +102,25 @@ export default function Profile() {
       </DashboardCard>
 
       {/* Stats Cards */}
-      <div className="px-5 mb-6">
-        <h2 className="text-lg font-semibold mb-3">Today's Points</h2>
-        <div className="p-6 rounded-3xl bg-gradient-to-br from-purple-500 to-indigo-600 text-white text-center">
+      <div className="px-4 sm:px-5 md:px-8 mb-4 sm:mb-6">
+        <h2 className="text-base sm:text-lg font-semibold mb-3">Today's Points</h2>
+        <div className="p-4 sm:p-6 rounded-2xl sm:rounded-3xl bg-gradient-to-br from-purple-500 to-indigo-600 text-white text-center">
           <motion.div
             initial={{ scale: 0 }}
             animate={{ scale: 1 }}
-            className="text-4xl font-bold"
+            className="text-3xl sm:text-4xl font-bold"
           >
             {getTodayPoints()}
           </motion.div>
-          <p className="text-sm opacity-90 mt-1">points earned today</p>
+          <p className="text-xs sm:text-sm opacity-90 mt-1">points earned today</p>
         </div>
       </div>
 
       {/* Goals Section */}
-      <div className="px-5 mb-6">
+      <div className="px-4 sm:px-5 md:px-8 mb-4 sm:mb-6">
         <div className="flex items-center justify-between mb-3">
-          <h2 className="text-lg font-semibold flex items-center gap-2">
-            <Target className="w-5 h-5 text-primary" />
+          <h2 className="text-base sm:text-lg font-semibold flex items-center gap-2">
+            <Target className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
             Daily Goals
           </h2>
           <Button
@@ -140,69 +140,69 @@ export default function Profile() {
           </Button>
         </div>
 
-        <div className="space-y-3">
-          <DashboardCard className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-water-light flex items-center justify-center">
-                <Droplets className="w-5 h-5 text-water" />
+        <div className="space-y-2 sm:space-y-3">
+          <DashboardCard className="flex items-center justify-between p-3 sm:p-4">
+            <div className="flex items-center gap-2 sm:gap-3">
+              <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-water-light flex items-center justify-center">
+                <Droplets className="w-4 h-4 sm:w-5 sm:h-5 text-water" />
               </div>
               <div>
-                <p className="font-medium">Water Intake</p>
-                <p className="text-sm text-muted-foreground">Daily hydration goal</p>
+                <p className="text-sm sm:text-base font-medium">Water Intake</p>
+                <p className="text-xs sm:text-sm text-muted-foreground">Daily hydration goal</p>
               </div>
             </div>
-            <span className="text-lg font-bold text-water">{profile.goals.waterGoal / 1000}L</span>
+            <span className="text-base sm:text-lg font-bold text-water">{profile.goals.waterGoal / 1000}L</span>
           </DashboardCard>
 
-          <DashboardCard className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-nutrition-light flex items-center justify-center">
-                <Utensils className="w-5 h-5 text-nutrition" />
+          <DashboardCard className="flex items-center justify-between p-3 sm:p-4">
+            <div className="flex items-center gap-2 sm:gap-3">
+              <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-nutrition-light flex items-center justify-center">
+                <Utensils className="w-4 h-4 sm:w-5 sm:h-5 text-nutrition" />
               </div>
               <div>
-                <p className="font-medium">Calories</p>
-                <p className="text-sm text-muted-foreground">Daily calorie target</p>
+                <p className="text-sm sm:text-base font-medium">Calories</p>
+                <p className="text-xs sm:text-sm text-muted-foreground">Daily calorie target</p>
               </div>
             </div>
-            <span className="text-lg font-bold text-nutrition">{profile.goals.calorieGoal}</span>
+            <span className="text-base sm:text-lg font-bold text-nutrition">{profile.goals.calorieGoal}</span>
           </DashboardCard>
 
-          <DashboardCard className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-fitness-light flex items-center justify-center">
-                <Dumbbell className="w-5 h-5 text-fitness" />
+          <DashboardCard className="flex items-center justify-between p-3 sm:p-4">
+            <div className="flex items-center gap-2 sm:gap-3">
+              <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-fitness-light flex items-center justify-center">
+                <Dumbbell className="w-4 h-4 sm:w-5 sm:h-5 text-fitness" />
               </div>
               <div>
-                <p className="font-medium">Fitness</p>
-                <p className="text-sm text-muted-foreground">Weekly activity minutes</p>
+                <p className="text-sm sm:text-base font-medium">Fitness</p>
+                <p className="text-xs sm:text-sm text-muted-foreground">Weekly activity minutes</p>
               </div>
             </div>
-            <span className="text-lg font-bold text-fitness">{profile.goals.fitnessGoal}m</span>
+            <span className="text-base sm:text-lg font-bold text-fitness">{profile.goals.fitnessGoal}m</span>
           </DashboardCard>
         </div>
       </div>
 
       {/* Achievements */}
-      <div className="px-5">
-        <h2 className="text-lg font-semibold mb-3 flex items-center gap-2">
-          <Trophy className="w-5 h-5 text-amber-500" />
+      <div className="px-4 sm:px-5 md:px-8">
+        <h2 className="text-base sm:text-lg font-semibold mb-3 flex items-center gap-2">
+          <Trophy className="w-4 h-4 sm:w-5 sm:h-5 text-amber-500" />
           Achievements
         </h2>
-        <div className="grid grid-cols-3 gap-3">
+        <div className="grid grid-cols-3 gap-2 sm:gap-3">
           {achievements.map((achievement) => {
             const isUnlocked = profile.achievements?.includes(achievement.id);
             return (
               <motion.div
                 key={achievement.id}
                 whileHover={{ scale: 1.02 }}
-                className={`p-4 rounded-2xl text-center transition-colors ${
+                className={`p-2 sm:p-4 rounded-xl sm:rounded-2xl text-center transition-colors ${
                   isUnlocked
                     ? 'bg-gradient-to-br from-amber-100 to-amber-50 dark:from-amber-900/30 dark:to-amber-800/20'
                     : 'bg-muted/50 opacity-50'
                 }`}
               >
-                <span className="text-3xl">{achievement.icon}</span>
-                <p className="text-xs font-medium mt-2 line-clamp-1">{achievement.name}</p>
+                <span className="text-xl sm:text-3xl">{achievement.icon}</span>
+                <p className="text-[10px] sm:text-xs font-medium mt-1 sm:mt-2 line-clamp-1">{achievement.name}</p>
               </motion.div>
             );
           })}

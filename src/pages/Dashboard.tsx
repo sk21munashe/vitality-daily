@@ -59,17 +59,17 @@ export default function Dashboard() {
   return (
     <div className="h-full flex flex-col bg-background pb-4 overflow-y-auto relative">
       {/* Header */}
-      <header className="pt-6 pb-4 px-5">
+      <header className="pt-4 sm:pt-6 pb-3 sm:pb-4 px-4 sm:px-5 md:px-8">
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           className="flex items-center justify-between"
         >
           <div>
-            <p className="text-muted-foreground text-sm">
+            <p className="text-muted-foreground text-xs sm:text-sm">
               {format(new Date(), 'EEEE, MMMM d')}
             </p>
-            <h1 className="text-2xl font-bold text-foreground mt-1">
+            <h1 className="text-xl sm:text-2xl font-bold text-foreground mt-1">
               Hi, {profile.name.split(' ')[0]}! 👋
             </h1>
           </div>
@@ -82,24 +82,54 @@ export default function Dashboard() {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 0.2 }}
-        className="px-5 mb-6"
+        className="px-4 sm:px-5 md:px-8 mb-4 sm:mb-6"
       >
         <div className="flex items-center gap-2 text-muted-foreground">
-          <Sparkles className="w-4 h-4 text-amber-500" />
-          <p className="text-sm italic">{quote}</p>
+          <Sparkles className="w-4 h-4 text-amber-500 flex-shrink-0" />
+          <p className="text-xs sm:text-sm italic line-clamp-2">{quote}</p>
         </div>
       </motion.div>
 
       {/* Progress Rings */}
-      <DashboardCard className="mx-5 mb-6" delay={0.1}>
-        <h2 className="text-lg font-semibold mb-6 text-center">Today's Progress</h2>
-        <div className="flex justify-around items-center">
+      <DashboardCard className="mx-4 sm:mx-5 md:mx-8 mb-4 sm:mb-6" delay={0.1}>
+        <h2 className="text-base sm:text-lg font-semibold mb-4 sm:mb-6 text-center">Today's Progress</h2>
+        <div className="flex justify-around items-center gap-2">
           <ProgressRing
             progress={waterProgress}
             variant="water"
             label="Water"
             value={`${Math.round(todayWater / 1000 * 10) / 10}L`}
             subLabel={`of ${profile.goals.waterGoal / 1000}L`}
+            size={80}
+            className="sm:hidden"
+          />
+          <ProgressRing
+            progress={caloriesProgress}
+            variant="nutrition"
+            label="Calories"
+            value={`${todayCalories}`}
+            subLabel={`of ${profile.goals.calorieGoal}`}
+            size={100}
+            className="sm:hidden"
+          />
+          <ProgressRing
+            progress={fitnessProgress}
+            variant="fitness"
+            label="Fitness"
+            value={`${todayFitness}m`}
+            subLabel="of 30 min"
+            size={80}
+            className="sm:hidden"
+          />
+          {/* Larger screens */}
+          <ProgressRing
+            progress={waterProgress}
+            variant="water"
+            label="Water"
+            value={`${Math.round(todayWater / 1000 * 10) / 10}L`}
+            subLabel={`of ${profile.goals.waterGoal / 1000}L`}
+            size={120}
+            className="hidden sm:flex"
           />
           <ProgressRing
             progress={caloriesProgress}
@@ -108,6 +138,7 @@ export default function Dashboard() {
             value={`${todayCalories}`}
             subLabel={`of ${profile.goals.calorieGoal}`}
             size={160}
+            className="hidden sm:flex"
           />
           <ProgressRing
             progress={fitnessProgress}
@@ -115,19 +146,21 @@ export default function Dashboard() {
             label="Fitness"
             value={`${todayFitness}m`}
             subLabel="of 30 min"
+            size={120}
+            className="hidden sm:flex"
           />
         </div>
       </DashboardCard>
 
       {/* Points */}
-      <div className="px-5 mb-6 flex justify-center">
+      <div className="px-4 sm:px-5 md:px-8 mb-4 sm:mb-6 flex justify-center">
         <PointsBadge points={todayPoints} />
       </div>
 
       {/* Quick Log Section */}
-      <div className="px-5 mb-6">
-        <h2 className="text-lg font-semibold mb-4">Quick Log</h2>
-        <div className="grid grid-cols-1 gap-3">
+      <div className="px-4 sm:px-5 md:px-8 mb-4 sm:mb-6">
+        <h2 className="text-base sm:text-lg font-semibold mb-3 sm:mb-4">Quick Log</h2>
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 sm:gap-3">
           <QuickLogButton
             icon={Droplets}
             label="Log Water Intake"
@@ -150,8 +183,8 @@ export default function Dashboard() {
       </div>
 
       {/* Daily Challenges */}
-      <DashboardCard className="mx-5 mb-6" delay={0.3}>
-        <h2 className="text-lg font-semibold mb-4">Daily Challenges</h2>
+      <DashboardCard className="mx-4 sm:mx-5 md:mx-8 mb-4 sm:mb-6" delay={0.3}>
+        <h2 className="text-base sm:text-lg font-semibold mb-3 sm:mb-4">Daily Challenges</h2>
         <div className="space-y-3">
           <ChallengeItem
             title="Drink 8 glasses of water"
@@ -191,9 +224,9 @@ export default function Dashboard() {
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
         onClick={() => setShowQuickAdd(true)}
-        className="absolute bottom-4 right-5 w-14 h-14 rounded-full bg-gradient-to-br from-primary to-primary/80 text-primary-foreground shadow-lg flex items-center justify-center"
+        className="fixed bottom-20 sm:bottom-24 right-4 sm:right-5 w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-gradient-to-br from-primary to-primary/80 text-primary-foreground shadow-lg flex items-center justify-center z-40"
       >
-        <Plus className="w-6 h-6" />
+        <Plus className="w-5 h-5 sm:w-6 sm:h-6" />
       </motion.button>
 
       {/* Quick Add Dialog */}

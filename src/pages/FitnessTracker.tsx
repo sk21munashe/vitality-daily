@@ -76,36 +76,36 @@ export default function FitnessTracker() {
   return (
     <div className="h-full flex flex-col bg-background pb-4 overflow-y-auto">
       {/* Header */}
-      <header className="pt-6 pb-4 px-5">
-        <div className="flex items-center gap-4">
+      <header className="pt-4 sm:pt-6 pb-3 sm:pb-4 px-4 sm:px-5 md:px-8">
+        <div className="flex items-center gap-3 sm:gap-4">
           <button
             onClick={() => navigate('/')}
             className="p-2 rounded-xl hover:bg-muted transition-colors"
           >
             <ChevronLeft className="w-5 h-5" />
           </button>
-          <div className="flex-1">
-            <h1 className="text-2xl font-bold text-gradient-fitness">Fitness Tracker</h1>
-            <p className="text-sm text-muted-foreground">Move your body, energize your life</p>
+          <div className="flex-1 min-w-0">
+            <h1 className="text-xl sm:text-2xl font-bold text-gradient-fitness truncate">Fitness Tracker</h1>
+            <p className="text-xs sm:text-sm text-muted-foreground">Move your body, energize your life</p>
           </div>
         </div>
       </header>
 
       {/* Weekly Goal Card */}
-      <DashboardCard className="mx-5 mb-6 glass-fitness">
-        <div className="flex items-center justify-between">
-          <div className="flex-1">
+      <DashboardCard className="mx-4 sm:mx-5 md:mx-8 mb-4 sm:mb-6 glass-fitness">
+        <div className="flex items-center justify-between gap-3">
+          <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 mb-2">
-              <Target className="w-5 h-5 text-fitness" />
-              <span className="font-semibold">Weekly Goal</span>
+              <Target className="w-4 h-4 sm:w-5 sm:h-5 text-fitness" />
+              <span className="text-sm sm:text-base font-semibold">Weekly Goal</span>
             </div>
-            <p className="text-3xl font-bold text-fitness">
+            <p className="text-2xl sm:text-3xl font-bold text-fitness">
               {weekMinutes}
-              <span className="text-lg font-normal text-muted-foreground ml-1">
+              <span className="text-sm sm:text-lg font-normal text-muted-foreground ml-1">
                 / {profile.goals.fitnessGoal} min
               </span>
             </p>
-            <div className="w-full h-3 bg-fitness-light rounded-full mt-3 overflow-hidden">
+            <div className="w-full h-2 sm:h-3 bg-fitness-light rounded-full mt-3 overflow-hidden">
               <motion.div
                 initial={{ width: 0 }}
                 animate={{ width: `${Math.min(weekProgress, 100)}%` }}
@@ -114,42 +114,44 @@ export default function FitnessTracker() {
               />
             </div>
           </div>
-          <ProgressRing
-            progress={weekProgress}
-            variant="fitness"
-            label=""
-            value={`${Math.round(weekProgress)}%`}
-            size={90}
-          />
+          <div className="hidden sm:block">
+            <ProgressRing
+              progress={weekProgress}
+              variant="fitness"
+              label=""
+              value={`${Math.round(weekProgress)}%`}
+              size={90}
+            />
+          </div>
         </div>
       </DashboardCard>
 
       {/* Today's Stats */}
-      <div className="px-5 mb-6">
-        <h2 className="text-lg font-semibold mb-3 flex items-center gap-2">
+      <div className="px-4 sm:px-5 md:px-8 mb-4 sm:mb-6">
+        <h2 className="text-base sm:text-lg font-semibold mb-3 flex items-center gap-2">
           <Dumbbell className="w-5 h-5 text-fitness" />
           Today
         </h2>
-        <div className="grid grid-cols-2 gap-3">
-          <DashboardCard className="text-center">
-            <Clock className="w-6 h-6 mx-auto text-fitness mb-2" />
-            <p className="text-2xl font-bold">{todayMinutes}</p>
-            <p className="text-xs text-muted-foreground">minutes</p>
+        <div className="grid grid-cols-2 gap-2 sm:gap-3">
+          <DashboardCard className="text-center p-3 sm:p-4">
+            <Clock className="w-5 h-5 sm:w-6 sm:h-6 mx-auto text-fitness mb-2" />
+            <p className="text-xl sm:text-2xl font-bold">{todayMinutes}</p>
+            <p className="text-[10px] sm:text-xs text-muted-foreground">minutes</p>
           </DashboardCard>
-          <DashboardCard className="text-center">
-            <Flame className="w-6 h-6 mx-auto text-fitness mb-2" />
-            <p className="text-2xl font-bold">
+          <DashboardCard className="text-center p-3 sm:p-4">
+            <Flame className="w-5 h-5 sm:w-6 sm:h-6 mx-auto text-fitness mb-2" />
+            <p className="text-xl sm:text-2xl font-bold">
               {todayWorkouts.reduce((sum, w) => sum + w.caloriesBurned, 0)}
             </p>
-            <p className="text-xs text-muted-foreground">cal burned</p>
+            <p className="text-[10px] sm:text-xs text-muted-foreground">cal burned</p>
           </DashboardCard>
         </div>
       </div>
 
       {/* Activity Types */}
-      <div className="px-5 mb-6">
-        <h2 className="text-lg font-semibold mb-3">Log Activity</h2>
-        <div className="grid grid-cols-5 gap-2">
+      <div className="px-4 sm:px-5 md:px-8 mb-4 sm:mb-6">
+        <h2 className="text-base sm:text-lg font-semibold mb-3">Log Activity</h2>
+        <div className="grid grid-cols-5 sm:grid-cols-10 gap-1.5 sm:gap-2">
           {activityTypes.slice(0, 10).map((activity) => (
             <motion.button
               key={activity.id}
@@ -159,10 +161,10 @@ export default function FitnessTracker() {
                 setSelectedActivity(activity);
                 setShowAddWorkout(true);
               }}
-              className="p-3 rounded-2xl bg-fitness-light hover:bg-fitness/20 transition-colors flex flex-col items-center gap-1"
+              className="p-2 sm:p-3 rounded-xl sm:rounded-2xl bg-fitness-light hover:bg-fitness/20 transition-colors flex flex-col items-center gap-1"
             >
-              <span className="text-xl">{activity.icon}</span>
-              <span className="text-xs font-medium truncate w-full text-center">
+              <span className="text-lg sm:text-xl">{activity.icon}</span>
+              <span className="text-[8px] sm:text-xs font-medium truncate w-full text-center">
                 {activity.name.split(' ')[0]}
               </span>
             </motion.button>
@@ -171,12 +173,12 @@ export default function FitnessTracker() {
       </div>
 
       {/* Week Chart */}
-      <DashboardCard className="mx-5 mb-6" delay={0.2}>
-        <h2 className="text-lg font-semibold mb-4">This Week</h2>
-        <div className="flex items-end justify-between h-32 gap-1">
+      <DashboardCard className="mx-4 sm:mx-5 md:mx-8 mb-4 sm:mb-6" delay={0.2}>
+        <h2 className="text-base sm:text-lg font-semibold mb-4">This Week</h2>
+        <div className="flex items-end justify-between h-24 sm:h-32 gap-1">
           {weekData.map((day, i) => (
-            <div key={i} className="flex-1 flex flex-col items-center gap-2">
-              <div className="w-full flex flex-col items-center justify-end h-24">
+            <div key={i} className="flex-1 flex flex-col items-center gap-1 sm:gap-2">
+              <div className="w-full flex flex-col items-center justify-end h-16 sm:h-24">
                 <motion.div
                   initial={{ height: 0 }}
                   animate={{ height: `${(day.minutes / maxMinutes) * 100}%` }}
@@ -187,49 +189,49 @@ export default function FitnessTracker() {
                   style={{ minHeight: day.minutes > 0 ? '8px' : '0' }}
                 />
               </div>
-              <span className={`text-xs ${day.isToday ? 'font-bold text-fitness' : 'text-muted-foreground'}`}>
+              <span className={`text-[10px] sm:text-xs ${day.isToday ? 'font-bold text-fitness' : 'text-muted-foreground'}`}>
                 {day.day}
               </span>
             </div>
           ))}
         </div>
-        <div className="flex justify-between mt-3 text-xs text-muted-foreground">
+        <div className="flex justify-between mt-3 text-[10px] sm:text-xs text-muted-foreground">
           <span>Daily avg: {Math.round(weekMinutes / 7)} min</span>
           <span>Total: {weekMinutes} min</span>
         </div>
       </DashboardCard>
 
       {/* Today's Workouts */}
-      <DashboardCard className="mx-5" delay={0.3}>
-        <h2 className="text-lg font-semibold mb-3">Today's Workouts</h2>
+      <DashboardCard className="mx-4 sm:mx-5 md:mx-8" delay={0.3}>
+        <h2 className="text-base sm:text-lg font-semibold mb-3">Today's Workouts</h2>
         {todayWorkouts.length > 0 ? (
-          <div className="space-y-3">
+          <div className="space-y-2 sm:space-y-3">
             {todayWorkouts.map((workout) => (
-              <div key={workout.id} className="flex items-center justify-between p-3 rounded-xl bg-muted/50">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-fitness-light flex items-center justify-center">
-                    <span className="text-lg">
+              <div key={workout.id} className="flex items-center justify-between p-2 sm:p-3 rounded-xl bg-muted/50">
+                <div className="flex items-center gap-2 sm:gap-3">
+                  <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-fitness-light flex items-center justify-center">
+                    <span className="text-base sm:text-lg">
                       {activityTypes.find(a => a.name === workout.activityType)?.icon || '🏃'}
                     </span>
                   </div>
                   <div>
-                    <p className="font-medium">{workout.activityType}</p>
-                    <p className="text-xs text-muted-foreground">
+                    <p className="text-sm sm:text-base font-medium">{workout.activityType}</p>
+                    <p className="text-[10px] sm:text-xs text-muted-foreground">
                       {workout.duration} min • {workout.caloriesBurned} cal
                     </p>
                   </div>
                 </div>
-                <span className="text-sm text-muted-foreground">{workout.time}</span>
+                <span className="text-xs sm:text-sm text-muted-foreground">{workout.time}</span>
               </div>
             ))}
           </div>
         ) : (
-          <div className="text-center py-8">
-            <Dumbbell className="w-12 h-12 mx-auto text-muted-foreground/30 mb-3" />
-            <p className="text-muted-foreground">No workouts logged today</p>
+          <div className="text-center py-6 sm:py-8">
+            <Dumbbell className="w-10 h-10 sm:w-12 sm:h-12 mx-auto text-muted-foreground/30 mb-3" />
+            <p className="text-sm text-muted-foreground">No workouts logged today</p>
             <Button
               onClick={() => setShowAddWorkout(true)}
-              className="mt-3 bg-fitness hover:bg-fitness-dark"
+              className="mt-3 bg-fitness hover:bg-fitness-dark w-full sm:w-auto"
             >
               <Play className="w-4 h-4 mr-2" />
               Start Workout
@@ -240,7 +242,7 @@ export default function FitnessTracker() {
 
       {/* Add Workout Dialog */}
       <Dialog open={showAddWorkout} onOpenChange={setShowAddWorkout}>
-        <DialogContent className="sm:max-w-md">
+        <DialogContent className="sm:max-w-md mx-4 sm:mx-auto">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
               <Dumbbell className="w-5 h-5 text-fitness" />
@@ -252,19 +254,19 @@ export default function FitnessTracker() {
             {/* Activity Selection */}
             <div>
               <Label>Activity Type</Label>
-              <div className="grid grid-cols-5 gap-2 mt-2">
+              <div className="grid grid-cols-5 gap-1.5 sm:gap-2 mt-2">
                 {activityTypes.map((activity) => (
                   <button
                     key={activity.id}
                     onClick={() => setSelectedActivity(activity)}
-                    className={`p-2 rounded-xl transition-colors flex flex-col items-center gap-1 ${
+                    className={`p-1.5 sm:p-2 rounded-xl transition-colors flex flex-col items-center gap-1 ${
                       selectedActivity?.id === activity.id
                         ? 'bg-fitness text-white'
                         : 'bg-muted hover:bg-fitness-light'
                     }`}
                   >
-                    <span className="text-lg">{activity.icon}</span>
-                    <span className="text-[10px] truncate w-full text-center">
+                    <span className="text-base sm:text-lg">{activity.icon}</span>
+                    <span className="text-[8px] sm:text-[10px] truncate w-full text-center">
                       {activity.name.split(' ')[0]}
                     </span>
                   </button>

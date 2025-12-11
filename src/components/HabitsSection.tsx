@@ -80,7 +80,7 @@ export function HabitsSection({
   };
 
   return (
-    <DashboardCard className="mx-5 mb-6" delay={0.4}>
+    <DashboardCard className="mx-4 sm:mx-5 md:mx-8 mb-6" delay={0.4}>
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-lg font-semibold">My Habits</h2>
         <Dialog open={isOpen} onOpenChange={setIsOpen}>
