@@ -78,21 +78,21 @@ export default function WaterTracker() {
   return (
     <div className="h-full flex flex-col bg-background pb-4 overflow-y-auto">
       {/* Header */}
-      <header className="pt-6 pb-4 px-5">
-        <div className="flex items-center gap-4">
+      <header className="pt-4 sm:pt-6 pb-3 sm:pb-4 px-4 sm:px-5 md:px-8">
+        <div className="flex items-center gap-3 sm:gap-4">
           <button
             onClick={() => navigate('/')}
             className="p-2 rounded-xl hover:bg-muted transition-colors"
           >
             <ChevronLeft className="w-5 h-5" />
           </button>
-          <div className="flex-1">
-            <h1 className="text-2xl font-bold text-gradient-water">Water Tracker</h1>
-            <p className="text-sm text-muted-foreground">Stay hydrated, stay healthy</p>
+          <div className="flex-1 min-w-0">
+            <h1 className="text-xl sm:text-2xl font-bold text-gradient-water truncate">Water Tracker</h1>
+            <p className="text-xs sm:text-sm text-muted-foreground">Stay hydrated, stay healthy</p>
           </div>
           <button
             onClick={() => setShowGoalDialog(true)}
-            className="p-2 rounded-xl hover:bg-muted transition-colors"
+            className="p-2 rounded-xl hover:bg-muted transition-colors flex-shrink-0"
           >
             <Target className="w-5 h-5 text-water" />
           </button>
@@ -100,12 +100,12 @@ export default function WaterTracker() {
       </header>
 
       {/* Water Summary Card with Progress */}
-      <div className="px-5 mb-4">
+      <div className="px-4 sm:px-5 md:px-8 mb-4">
         <DashboardCard className="glass-water">
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-3 sm:gap-4">
             {/* Circular Progress */}
-            <div className="relative w-20 h-20 flex-shrink-0">
-              <svg className="w-20 h-20 -rotate-90" viewBox="0 0 80 80">
+            <div className="relative w-16 h-16 sm:w-20 sm:h-20 flex-shrink-0">
+              <svg className="w-16 h-16 sm:w-20 sm:h-20 -rotate-90" viewBox="0 0 80 80">
                 <circle
                   cx="40"
                   cy="40"
@@ -132,20 +132,20 @@ export default function WaterTracker() {
                 />
               </svg>
               <div className="absolute inset-0 flex items-center justify-center">
-                <span className="text-lg font-bold text-water">
+                <span className="text-sm sm:text-lg font-bold text-water">
                   {Math.min(Math.round((todayWater / profile.goals.waterGoal) * 100), 100)}%
                 </span>
               </div>
             </div>
             
             {/* Summary Text */}
-            <div className="flex-1">
-              <h3 className="text-sm text-muted-foreground mb-1">Today's Intake</h3>
+            <div className="flex-1 min-w-0">
+              <h3 className="text-xs sm:text-sm text-muted-foreground mb-1">Today's Intake</h3>
               <div className="flex items-baseline gap-1">
-                <span className="text-3xl font-bold text-water">
+                <span className="text-2xl sm:text-3xl font-bold text-water">
                   {(todayWater / 1000).toFixed(1)}
                 </span>
-                <span className="text-lg text-muted-foreground">
+                <span className="text-base sm:text-lg text-muted-foreground">
                   / {profile.goals.waterGoal / 1000}L
                 </span>
               </div>
@@ -161,20 +161,20 @@ export default function WaterTracker() {
       </div>
 
       {/* Quick Add Buttons */}
-      <div className="px-5 mb-6">
-        <h2 className="text-lg font-semibold mb-3 flex items-center gap-2">
+      <div className="px-4 sm:px-5 md:px-8 mb-4 sm:mb-6">
+        <h2 className="text-base sm:text-lg font-semibold mb-3 flex items-center gap-2">
           <Droplets className="w-5 h-5 text-water" />
           Add Water
         </h2>
-        <div className="grid grid-cols-4 gap-2 relative z-10">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 relative z-10">
           {[250, 500, 750, 1000].map((amount) => (
             <Button
               key={amount}
               variant="outline"
               onClick={() => handleAddWater(amount)}
-              className="p-4 h-auto rounded-2xl bg-water/10 border-water/30 hover:bg-water/20 transition-colors text-center flex flex-col"
+              className="p-3 sm:p-4 h-auto rounded-2xl bg-water/10 border-water/30 hover:bg-water/20 transition-colors text-center flex flex-col w-full"
             >
-              <span className="block text-lg font-bold text-water">
+              <span className="block text-base sm:text-lg font-bold text-water">
                 {amount >= 1000 ? `${amount / 1000}L` : `${amount}ml`}
               </span>
               <span className="text-xs text-muted-foreground">
@@ -194,12 +194,12 @@ export default function WaterTracker() {
       </div>
 
       {/* Week Chart */}
-      <DashboardCard className="mx-5" delay={0.2}>
-        <h2 className="text-lg font-semibold mb-4">Last 7 Days</h2>
-        <div className="flex items-end justify-between h-32 gap-1">
+      <DashboardCard className="mx-4 sm:mx-5 md:mx-8" delay={0.2}>
+        <h2 className="text-base sm:text-lg font-semibold mb-4">Last 7 Days</h2>
+        <div className="flex items-end justify-between h-24 sm:h-32 gap-1">
           {weekData.map((day, i) => (
-            <div key={i} className="flex-1 flex flex-col items-center gap-2">
-              <div className="w-full flex flex-col items-center justify-end h-24">
+            <div key={i} className="flex-1 flex flex-col items-center gap-1 sm:gap-2">
+              <div className="w-full flex flex-col items-center justify-end h-16 sm:h-24">
                 <motion.div
                   initial={{ height: 0 }}
                   animate={{ height: `${(day.amount / maxAmount) * 100}%` }}
@@ -210,13 +210,13 @@ export default function WaterTracker() {
                   style={{ minHeight: day.amount > 0 ? '8px' : '0' }}
                 />
               </div>
-              <span className={`text-xs ${day.isToday ? 'font-bold text-water' : 'text-muted-foreground'}`}>
+              <span className={`text-[10px] sm:text-xs ${day.isToday ? 'font-bold text-water' : 'text-muted-foreground'}`}>
                 {day.day}
               </span>
             </div>
           ))}
         </div>
-        <div className="flex justify-between mt-3 text-xs text-muted-foreground">
+        <div className="flex justify-between mt-3 text-[10px] sm:text-xs text-muted-foreground">
           <span>Goal: {profile.goals.waterGoal / 1000}L/day</span>
           <span>
             Avg: {Math.round(weekData.reduce((s, d) => s + d.amount, 0) / 7 / 100) / 10}L
@@ -225,25 +225,25 @@ export default function WaterTracker() {
       </DashboardCard>
 
       {/* Today's Log */}
-      <DashboardCard className="mx-5 mt-6" delay={0.3}>
-        <h2 className="text-lg font-semibold mb-3">Today's Log</h2>
+      <DashboardCard className="mx-4 sm:mx-5 md:mx-8 mt-4 sm:mt-6" delay={0.3}>
+        <h2 className="text-base sm:text-lg font-semibold mb-3">Today's Log</h2>
         {waterLogs
           .filter(log => log.date === format(new Date(), 'yyyy-MM-dd'))
           .slice(-5)
           .reverse()
           .map((log) => (
             <div key={log.id} className="flex items-center justify-between py-2 border-b border-border/50 last:border-0">
-              <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-full bg-water-light flex items-center justify-center">
-                  <Droplets className="w-4 h-4 text-water" />
+              <div className="flex items-center gap-2 sm:gap-3">
+                <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-water-light flex items-center justify-center">
+                  <Droplets className="w-3 h-3 sm:w-4 sm:h-4 text-water" />
                 </div>
-                <span className="font-medium">{log.amount}ml</span>
+                <span className="text-sm sm:text-base font-medium">{log.amount}ml</span>
               </div>
-              <span className="text-sm text-muted-foreground">{log.time}</span>
+              <span className="text-xs sm:text-sm text-muted-foreground">{log.time}</span>
             </div>
           ))}
         {waterLogs.filter(log => log.date === format(new Date(), 'yyyy-MM-dd')).length === 0 && (
-          <p className="text-center text-muted-foreground py-4">No water logged today yet</p>
+          <p className="text-center text-muted-foreground py-4 text-sm">No water logged today yet</p>
         )}
       </DashboardCard>
 

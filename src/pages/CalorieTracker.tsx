@@ -145,21 +145,21 @@ export default function CalorieTracker() {
   return (
     <div className="h-full flex flex-col bg-background pb-4 overflow-y-auto">
       {/* Header */}
-      <header className="pt-6 pb-4 px-5">
-        <div className="flex items-center gap-4">
+      <header className="pt-4 sm:pt-6 pb-3 sm:pb-4 px-4 sm:px-5 md:px-8">
+        <div className="flex items-center gap-3 sm:gap-4">
           <button
             onClick={() => navigate('/')}
             className="p-2 rounded-xl hover:bg-muted transition-colors"
           >
             <ChevronLeft className="w-5 h-5" />
           </button>
-          <div className="flex-1">
-            <h1 className="text-2xl font-bold text-gradient-nutrition">Calorie Tracker</h1>
-            <p className="text-sm text-muted-foreground">Fuel your body right</p>
+          <div className="flex-1 min-w-0">
+            <h1 className="text-xl sm:text-2xl font-bold text-gradient-nutrition truncate">Calorie Tracker</h1>
+            <p className="text-xs sm:text-sm text-muted-foreground">Fuel your body right</p>
           </div>
           <button
             onClick={() => setShowCalculator(true)}
-            className="p-2 rounded-xl hover:bg-muted transition-colors"
+            className="p-2 rounded-xl hover:bg-muted transition-colors flex-shrink-0"
           >
             <Calculator className="w-5 h-5 text-nutrition" />
           </button>
@@ -167,17 +167,17 @@ export default function CalorieTracker() {
       </header>
 
       {/* Summary Card */}
-      <DashboardCard className="mx-5 mb-6 glass-nutrition">
-        <div className="flex items-center justify-between">
-          <div className="flex-1">
-            <p className="text-sm text-muted-foreground mb-1">Calories Remaining</p>
-            <p className={`text-3xl font-bold ${caloriesRemaining >= 0 ? 'text-nutrition' : 'text-destructive'}`}>
+      <DashboardCard className="mx-4 sm:mx-5 md:mx-8 mb-4 sm:mb-6 glass-nutrition">
+        <div className="flex items-center justify-between gap-3">
+          <div className="flex-1 min-w-0">
+            <p className="text-xs sm:text-sm text-muted-foreground mb-1">Calories Remaining</p>
+            <p className={`text-2xl sm:text-3xl font-bold ${caloriesRemaining >= 0 ? 'text-nutrition' : 'text-destructive'}`}>
               {Math.abs(caloriesRemaining)}
-              <span className="text-lg font-normal text-muted-foreground ml-1">
+              <span className="text-sm sm:text-lg font-normal text-muted-foreground ml-1">
                 {caloriesRemaining < 0 ? 'over' : 'left'}
               </span>
             </p>
-            <div className="flex items-center gap-4 mt-3 text-sm">
+            <div className="flex items-center gap-3 sm:gap-4 mt-2 sm:mt-3 text-xs sm:text-sm">
               <span className="text-muted-foreground">
                 Goal: <span className="text-foreground font-medium">{profile.goals.calorieGoal}</span>
               </span>
@@ -186,19 +186,21 @@ export default function CalorieTracker() {
               </span>
             </div>
           </div>
-          <ProgressRing
-            progress={(todayCalories / profile.goals.calorieGoal) * 100}
-            variant="nutrition"
-            label=""
-            value={`${Math.round((todayCalories / profile.goals.calorieGoal) * 100)}%`}
-            size={100}
-          />
+          <div className="hidden sm:block">
+            <ProgressRing
+              progress={(todayCalories / profile.goals.calorieGoal) * 100}
+              variant="nutrition"
+              label=""
+              value={`${Math.round((todayCalories / profile.goals.calorieGoal) * 100)}%`}
+              size={100}
+            />
+          </div>
         </div>
       </DashboardCard>
 
       {/* Meal Type Buttons */}
-      <div className="px-5 mb-6">
-        <h2 className="text-lg font-semibold mb-3 flex items-center gap-2">
+      <div className="px-4 sm:px-5 md:px-8 mb-4 sm:mb-6">
+        <h2 className="text-base sm:text-lg font-semibold mb-3 flex items-center gap-2">
           <Utensils className="w-5 h-5 text-nutrition" />
           Log a Meal
         </h2>
@@ -212,18 +214,18 @@ export default function CalorieTracker() {
                 setSelectedMealType(id as FoodLog['mealType']);
                 setShowAddFood(true);
               }}
-              className="p-4 rounded-2xl bg-nutrition-light hover:bg-nutrition/20 transition-colors flex flex-col items-center gap-2"
+              className="p-2 sm:p-4 rounded-xl sm:rounded-2xl bg-nutrition-light hover:bg-nutrition/20 transition-colors flex flex-col items-center gap-1 sm:gap-2"
             >
-              <Icon className="w-5 h-5 text-nutrition" />
-              <span className="text-xs font-medium">{label}</span>
+              <Icon className="w-4 h-4 sm:w-5 sm:h-5 text-nutrition" />
+              <span className="text-[10px] sm:text-xs font-medium">{label}</span>
             </motion.button>
           ))}
         </div>
       </div>
 
       {/* Today's Meals */}
-      <div className="px-5">
-        <h2 className="text-lg font-semibold mb-3">Today's Meals</h2>
+      <div className="px-4 sm:px-5 md:px-8">
+        <h2 className="text-base sm:text-lg font-semibold mb-3">Today's Meals</h2>
         {mealTypes.map(({ id, label, icon: Icon }) => {
           const meals = mealsByType[id] || [];
           const totalCalories = meals.reduce((sum, m) => sum + m.foodItem.calories, 0);
@@ -232,19 +234,19 @@ export default function CalorieTracker() {
             <DashboardCard key={id} className="mb-3" delay={0.1}>
               <div className="flex items-center justify-between mb-2">
                 <div className="flex items-center gap-2">
-                  <div className="w-8 h-8 rounded-lg bg-nutrition-light flex items-center justify-center">
-                    <Icon className="w-4 h-4 text-nutrition" />
+                  <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-nutrition-light flex items-center justify-center">
+                    <Icon className="w-3 h-3 sm:w-4 sm:h-4 text-nutrition" />
                   </div>
-                  <span className="font-medium">{label}</span>
+                  <span className="text-sm sm:text-base font-medium">{label}</span>
                 </div>
-                <span className="text-sm font-semibold text-nutrition">{totalCalories} cal</span>
+                <span className="text-xs sm:text-sm font-semibold text-nutrition">{totalCalories} cal</span>
               </div>
               {meals.length > 0 ? (
                 <div className="space-y-2 mt-3">
                   {meals.map((meal) => (
-                    <div key={meal.id} className="flex items-center justify-between text-sm py-1 border-b border-border/50 last:border-0">
-                      <span className="text-muted-foreground">{meal.foodItem.name}</span>
-                      <span>{meal.foodItem.calories} cal</span>
+                    <div key={meal.id} className="flex items-center justify-between text-xs sm:text-sm py-1 border-b border-border/50 last:border-0">
+                      <span className="text-muted-foreground truncate mr-2">{meal.foodItem.name}</span>
+                      <span className="flex-shrink-0">{meal.foodItem.calories} cal</span>
                     </div>
                   ))}
                 </div>
@@ -254,7 +256,7 @@ export default function CalorieTracker() {
                     setSelectedMealType(id as FoodLog['mealType']);
                     setShowAddFood(true);
                   }}
-                  className="w-full py-2 text-sm text-muted-foreground hover:text-nutrition transition-colors"
+                  className="w-full py-2 text-xs sm:text-sm text-muted-foreground hover:text-nutrition transition-colors"
                 >
                   + Add {label.toLowerCase()}
                 </button>
