@@ -85,4 +85,8 @@ export interface UserProfile {
   streak: number;
   totalPoints: number;
   achievements: string[];
+  avatar?: {
+    type: 'icon' | 'image';
+    value: string; // icon name or base64 image
+  };
 }
