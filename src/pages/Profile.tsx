@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { ChevronLeft, User, Target, Trophy, Star, Flame, Droplets, Utensils, Dumbbell, Edit2 } from 'lucide-react';
+import { ChevronLeft, User, Target, Trophy, Star, Flame, Droplets, Utensils, Dumbbell, Edit2, LogOut } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { DashboardCard } from '@/components/DashboardCard';
 import { useWellnessData } from '@/hooks/useWellnessData';
@@ -15,6 +15,10 @@ import {
 } from '@/components/ui/dialog';
 import { toast } from 'sonner';
 
+interface ProfileProps {
+  onSignOut?: () => void;
+}
+
 const achievements = [
   { id: 'hydration_hero', name: 'Hydration Hero', description: 'Drink 2L of water for 7 days', icon: '💧', category: 'water' },
   { id: 'meal_master', name: 'Meal Master', description: 'Log 100 meals', icon: '🍽️', category: 'nutrition' },
@@ -24,7 +28,7 @@ const achievements = [
   { id: 'early_bird', name: 'Early Bird', description: 'Log breakfast before 9 AM', icon: '🌅', category: 'nutrition' },
 ];
 
-export default function Profile() {
+export default function Profile({ onSignOut }: ProfileProps) {
   const navigate = useNavigate();
   const [showEditProfile, setShowEditProfile] = useState(false);
   const [showEditGoals, setShowEditGoals] = useState(false);
@@ -65,6 +69,12 @@ export default function Profile() {
           <div className="flex-1">
             <h1 className="text-xl sm:text-2xl font-bold">Profile</h1>
           </div>
+          {onSignOut && (
+            <Button variant="ghost" size="sm" onClick={onSignOut} className="text-destructive hover:text-destructive">
+              <LogOut className="w-4 h-4 mr-1" />
+              Sign Out
+            </Button>
+          )}
         </div>
       </header>
 
