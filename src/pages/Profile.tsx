@@ -1,14 +1,12 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { ChevronLeft, User, Target, Trophy, Star, Flame, Droplets, Utensils, Dumbbell, Edit2, Sun, Moon } from 'lucide-react';
+import { ChevronLeft, User, Target, Trophy, Star, Flame, Droplets, Utensils, Dumbbell, Edit2 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { useTheme } from 'next-themes';
 import { DashboardCard } from '@/components/DashboardCard';
 import { useWellnessData } from '@/hooks/useWellnessData';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Switch } from '@/components/ui/switch';
 import {
   Dialog,
   DialogContent,
@@ -34,7 +32,6 @@ export default function Profile() {
   const [editGoals, setEditGoals] = useState({ water: '', calories: '', fitness: '' });
 
   const { profile, updateProfile, updateGoals, getTodayPoints } = useWellnessData();
-  const { theme, setTheme } = useTheme();
 
   const handleUpdateProfile = () => {
     if (editName.trim()) {
@@ -179,31 +176,7 @@ export default function Profile() {
                 <p className="text-sm sm:text-base font-medium">Fitness</p>
                 <p className="text-xs sm:text-sm text-muted-foreground">Weekly activity minutes</p>
               </div>
-      </div>
-
-      {/* Appearance Settings */}
-      <div className="px-4 sm:px-5 md:px-8 mb-4 sm:mb-6">
-        <h2 className="text-base sm:text-lg font-semibold mb-3">Appearance</h2>
-        <DashboardCard className="flex items-center justify-between p-3 sm:p-4">
-          <div className="flex items-center gap-2 sm:gap-3">
-            <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-muted flex items-center justify-center">
-              {theme === 'dark' ? (
-                <Moon className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
-              ) : (
-                <Sun className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
-              )}
             </div>
-            <div>
-              <p className="text-sm sm:text-base font-medium">Dark Mode</p>
-              <p className="text-xs sm:text-sm text-muted-foreground">Toggle dark/light theme</p>
-            </div>
-          </div>
-          <Switch
-            checked={theme === 'dark'}
-            onCheckedChange={(checked) => setTheme(checked ? 'dark' : 'light')}
-          />
-        </DashboardCard>
-      </div>
             <span className="text-base sm:text-lg font-bold text-fitness">{profile.goals.fitnessGoal}m</span>
           </DashboardCard>
         </div>

@@ -4,7 +4,6 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { HashRouter, Routes, Route } from "react-router-dom";
-import { ThemeProvider } from "@/components/ThemeProvider";
 import Index from "./pages/Index";
 import WaterTracker from "./pages/WaterTracker";
 import CalorieTracker from "./pages/CalorieTracker";
@@ -20,30 +19,28 @@ const App = () => {
   const [showSplash, setShowSplash] = useState(true);
 
   return (
-    <ThemeProvider attribute="class" defaultTheme="light" enableSystem disableTransitionOnChange>
-      <QueryClientProvider client={queryClient}>
-        <TooltipProvider>
-          <Toaster />
-          <Sonner position="top-center" richColors />
-          {showSplash && <SplashScreen onComplete={() => setShowSplash(false)} />}
-          <HashRouter>
-            <div className="h-full w-full flex flex-col bg-background overflow-hidden">
-              <main className="flex-1 overflow-y-auto overflow-x-hidden">
-                <Routes>
-                  <Route path="/" element={<Index />} />
-                  <Route path="/water" element={<WaterTracker />} />
-                  <Route path="/calories" element={<CalorieTracker />} />
-                  <Route path="/fitness" element={<FitnessTracker />} />
-                  <Route path="/profile" element={<Profile />} />
-                  <Route path="*" element={<NotFound />} />
-                </Routes>
-              </main>
-              <BottomNav />
-            </div>
-          </HashRouter>
-        </TooltipProvider>
-      </QueryClientProvider>
-    </ThemeProvider>
+    <QueryClientProvider client={queryClient}>
+      <TooltipProvider>
+        <Toaster />
+        <Sonner position="top-center" richColors />
+        {showSplash && <SplashScreen onComplete={() => setShowSplash(false)} />}
+        <HashRouter>
+          <div className="h-full w-full flex flex-col bg-background overflow-hidden">
+            <main className="flex-1 overflow-y-auto overflow-x-hidden">
+              <Routes>
+                <Route path="/" element={<Index />} />
+                <Route path="/water" element={<WaterTracker />} />
+                <Route path="/calories" element={<CalorieTracker />} />
+                <Route path="/fitness" element={<FitnessTracker />} />
+                <Route path="/profile" element={<Profile />} />
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </main>
+            <BottomNav />
+          </div>
+        </HashRouter>
+      </TooltipProvider>
+    </QueryClientProvider>
   );
 };
 
