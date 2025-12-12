@@ -12,6 +12,7 @@ import { HabitsSection } from '@/components/HabitsSection';
 import { ProgressCharts } from '@/components/ProgressCharts';
 import { ThemeToggle } from '@/components/ThemeToggle';
 import { useWellnessData } from '@/hooks/useWellnessData';
+import { useNotifications } from '@/hooks/useNotifications';
 import { motivationalQuotes } from '@/data/foodDatabase';
 import { Button } from '@/components/ui/button';
 import {
@@ -43,9 +44,7 @@ export default function Dashboard() {
     getTodayHabitProgress,
   } = useWellnessData();
 
-  useEffect(() => {
-    setQuote(motivationalQuotes[Math.floor(Math.random() * motivationalQuotes.length)]);
-  }, []);
+  const { updateNotificationConfig, sendGoalCompleteNotification, sendAllGoalsComplete } = useNotifications();
 
   const todayWater = getTodayWater();
   const todayCalories = getTodayCalories();
@@ -55,6 +54,50 @@ export default function Dashboard() {
   const waterProgress = (todayWater / profile.goals.waterGoal) * 100;
   const caloriesProgress = (todayCalories / profile.goals.calorieGoal) * 100;
   const fitnessProgress = (todayFitness / 30) * 100; // 30 min daily goal
+
+  useEffect(() => {
+    setQuote(motivationalQuotes[Math.floor(Math.random() * motivationalQuotes.length)]);
+  }, []);
+
+  // Update notification config when progress changes
+  useEffect(() => {
+    updateNotificationConfig({
+      streakDays: profile.streak,
+      waterProgress: todayWater,
+      calorieProgress: todayCalories,
+      fitnessProgress: todayFitness,
+      waterGoal: profile.goals.waterGoal,
+      calorieGoal: profile.goals.calorieGoal,
+      fitnessGoal: 30,
+    });
+
+    // Check for goal completions
+    const waterComplete = todayWater >= profile.goals.waterGoal;
+    const caloriesComplete = todayCalories >= profile.goals.calorieGoal;
+    const fitnessComplete = todayFitness >= 30;
+
+    const waterNotified = localStorage.getItem('vitaltrack_water_notified') === new Date().toDateString();
+    const caloriesNotified = localStorage.getItem('vitaltrack_calories_notified') === new Date().toDateString();
+    const fitnessNotified = localStorage.getItem('vitaltrack_fitness_notified') === new Date().toDateString();
+    const allNotified = localStorage.getItem('vitaltrack_all_notified') === new Date().toDateString();
+
+    if (waterComplete && !waterNotified) {
+      sendGoalCompleteNotification('water');
+      localStorage.setItem('vitaltrack_water_notified', new Date().toDateString());
+    }
+    if (caloriesComplete && !caloriesNotified) {
+      sendGoalCompleteNotification('calories');
+      localStorage.setItem('vitaltrack_calories_notified', new Date().toDateString());
+    }
+    if (fitnessComplete && !fitnessNotified) {
+      sendGoalCompleteNotification('fitness');
+      localStorage.setItem('vitaltrack_fitness_notified', new Date().toDateString());
+    }
+    if (waterComplete && caloriesComplete && fitnessComplete && !allNotified) {
+      sendAllGoalsComplete(profile.streak);
+      localStorage.setItem('vitaltrack_all_notified', new Date().toDateString());
+    }
+  }, [todayWater, todayCalories, todayFitness, profile, updateNotificationConfig, sendGoalCompleteNotification, sendAllGoalsComplete]);
 
   const handleQuickWater = (amount: number) => {
     addWater(amount);
