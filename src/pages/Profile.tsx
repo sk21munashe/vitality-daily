@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { ChevronLeft, User, Target, Trophy, Star, Flame, Droplets, Utensils, Dumbbell, Edit2, LogOut, Gift, Crown } from 'lucide-react';
+import { ChevronLeft, Target, Trophy, Star, Flame, Droplets, Utensils, Dumbbell, Edit2, LogOut, Gift, Crown } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { DashboardCard } from '@/components/DashboardCard';
 import { useWellnessData } from '@/hooks/useWellnessData';
@@ -18,6 +18,7 @@ import { toast } from 'sonner';
 import { AchievementProgress } from '@/components/AchievementProgress';
 import { TierRanking } from '@/components/TierRanking';
 import { DailyRewards } from '@/components/DailyRewards';
+import { AvatarSelector, AvatarDisplay } from '@/components/AvatarSelector';
 
 interface ProfileProps {
   onSignOut?: () => void;
@@ -38,6 +39,7 @@ export default function Profile({ onSignOut }: ProfileProps) {
   const navigate = useNavigate();
   const [showEditProfile, setShowEditProfile] = useState(false);
   const [showEditGoals, setShowEditGoals] = useState(false);
+  const [showAvatarSelector, setShowAvatarSelector] = useState(false);
   const [editName, setEditName] = useState('');
   const [editGoals, setEditGoals] = useState({ water: '', calories: '', fitness: '' });
 
@@ -150,9 +152,11 @@ export default function Profile({ onSignOut }: ProfileProps) {
       {/* Profile Card */}
       <DashboardCard className="mx-4 sm:mx-5 md:mx-8 mb-4 sm:mb-6">
         <div className="flex items-center gap-3 sm:gap-4">
-          <div className="w-14 h-14 sm:w-20 sm:h-20 rounded-full bg-gradient-to-br from-primary to-primary/60 flex items-center justify-center flex-shrink-0">
-            <User className="w-7 h-7 sm:w-10 sm:h-10 text-primary-foreground" />
-          </div>
+          <AvatarDisplay 
+            avatar={profile.avatar}
+            size="md"
+            onClick={() => setShowAvatarSelector(true)}
+          />
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2">
               <h2 className="text-lg sm:text-xl font-bold truncate">{profile.name}</h2>
@@ -366,6 +370,14 @@ export default function Profile({ onSignOut }: ProfileProps) {
           </div>
         </DialogContent>
       </Dialog>
+
+      {/* Avatar Selector */}
+      <AvatarSelector
+        open={showAvatarSelector}
+        onOpenChange={setShowAvatarSelector}
+        currentAvatar={profile.avatar}
+        onAvatarChange={(avatar) => updateProfile({ avatar })}
+      />
     </div>
   );
 }
