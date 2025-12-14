@@ -9,7 +9,6 @@ import Index from "./pages/Index";
 import WaterTracker from "./pages/WaterTracker";
 import CalorieTracker from "./pages/CalorieTracker";
 import FitnessTracker from "./pages/FitnessTracker";
-import SleepTracker from "./pages/SleepTracker";
 import Profile from "./pages/Profile";
 import NotFound from "./pages/NotFound";
 import Auth from "./pages/Auth";
@@ -30,28 +29,16 @@ const AuthenticatedApp = () => {
         <div className="h-full w-full flex flex-col bg-background overflow-hidden">
           <main className="flex-1 overflow-y-auto overflow-x-hidden">
             <Routes>
-              <Route 
-                path="/" 
-                element={
-                  <Index 
-                    displayName={displayName}
-                    onSignOut={signOut}
-                    cloudProfile={profile}
-                    onUpdatePreferredName={updatePreferredName}
-                    onUpdateAvatar={updateAvatar}
-                  />
-                } 
-              />
+              <Route path="/" element={<Index displayName={displayName} />} />
               <Route path="/water" element={<WaterTracker />} />
               <Route path="/calories" element={<CalorieTracker />} />
               <Route path="/fitness" element={<FitnessTracker />} />
-              <Route path="/sleep" element={<SleepTracker />} />
               <Route 
                 path="/profile" 
                 element={
                   <Profile 
+                    onSignOut={signOut} 
                     displayName={displayName}
-                    onSignOut={signOut}
                     cloudProfile={profile}
                     onUpdatePreferredName={updatePreferredName}
                     onUpdateAvatar={updateAvatar}

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { format } from 'date-fns';
-import { Droplets, Utensils, Dumbbell, Moon, Sparkles } from 'lucide-react';
+import { Droplets, Utensils, Dumbbell, Plus, Sparkles } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { ProgressRing } from '@/components/ProgressRing';
 import { QuickLogButton } from '@/components/QuickLogButton';
@@ -10,7 +10,7 @@ import { PointsBadge } from '@/components/PointsBadge';
 import { DashboardCard } from '@/components/DashboardCard';
 import { HabitsSection } from '@/components/HabitsSection';
 import { ProgressCharts } from '@/components/ProgressCharts';
-import { SettingsPanel } from '@/components/SettingsPanel';
+import { ThemeToggle } from '@/components/ThemeToggle';
 import { useWellnessData } from '@/hooks/useWellnessData';
 import { useNotifications } from '@/hooks/useNotifications';
 import { motivationalQuotes } from '@/data/foodDatabase';
@@ -21,23 +21,12 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
-import { UserProfile as CloudUserProfile } from '@/hooks/useAuth';
 
 interface DashboardProps {
   displayName?: string;
-  onSignOut?: () => void;
-  cloudProfile?: CloudUserProfile | null;
-  onUpdatePreferredName?: (name: string) => Promise<{ error: Error | null }>;
-  onUpdateAvatar?: (type: string, value: string) => Promise<{ error: Error | null }>;
 }
 
-export default function Dashboard({ 
-  displayName, 
-  onSignOut,
-  cloudProfile,
-  onUpdatePreferredName,
-  onUpdateAvatar
-}: DashboardProps) {
+export default function Dashboard({ displayName }: DashboardProps) {
   const navigate = useNavigate();
   const [quote, setQuote] = useState('');
   const [showQuickAdd, setShowQuickAdd] = useState(false);
@@ -137,13 +126,7 @@ export default function Dashboard({
             </h1>
           </div>
           <div className="flex items-center gap-2">
-            <SettingsPanel 
-              onSignOut={onSignOut}
-              displayName={displayName}
-              cloudProfile={cloudProfile}
-              onUpdatePreferredName={onUpdatePreferredName}
-              onUpdateAvatar={onUpdateAvatar}
-            />
+            <ThemeToggle />
             {profile.streak > 0 && <StreakBadge streak={profile.streak} />}
           </div>
         </motion.div>
@@ -235,10 +218,10 @@ export default function Dashboard({
       {/* Quick Log Section */}
       <div className="px-4 sm:px-5 md:px-8 mb-4 sm:mb-6">
         <h2 className="text-base sm:text-lg font-semibold mb-3 sm:mb-4">Quick Log</h2>
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 sm:gap-3">
           <QuickLogButton
             icon={Droplets}
-            label="Log Water"
+            label="Log Water Intake"
             variant="water"
             onClick={() => setShowQuickAdd(true)}
           />
@@ -253,12 +236,6 @@ export default function Dashboard({
             label="Log Workout"
             variant="fitness"
             onClick={() => navigate('/fitness')}
-          />
-          <QuickLogButton
-            icon={Moon}
-            label="Log Sleep"
-            variant="sleep"
-            onClick={() => navigate('/sleep')}
           />
         </div>
       </div>
