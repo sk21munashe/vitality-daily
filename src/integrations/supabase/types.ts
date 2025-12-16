@@ -14,36 +14,7 @@ export type Database = {
   }
   public: {
     Tables: {
-      profiles: {
-        Row: {
-          avatar_type: string | null
-          avatar_value: string | null
-          created_at: string
-          id: string
-          preferred_name: string | null
-          updated_at: string
-          user_id: string
-        }
-        Insert: {
-          avatar_type?: string | null
-          avatar_value?: string | null
-          created_at?: string
-          id?: string
-          preferred_name?: string | null
-          updated_at?: string
-          user_id: string
-        }
-        Update: {
-          avatar_type?: string | null
-          avatar_value?: string | null
-          created_at?: string
-          id?: string
-          preferred_name?: string | null
-          updated_at?: string
-          user_id?: string
-        }
-        Relationships: []
-      }
+      [_ in never]: never
     }
     Views: {
       [_ in never]: never

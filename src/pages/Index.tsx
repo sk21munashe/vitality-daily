@@ -1,11 +1,7 @@
 import Dashboard from './Dashboard';
 
-interface IndexProps {
-  displayName?: string;
-}
-
-const Index = ({ displayName }: IndexProps) => {
-  return <Dashboard displayName={displayName} />;
+const Index = () => {
+  return <Dashboard />;
 };
 
 export default Index;
