@@ -22,11 +22,7 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 
-interface DashboardProps {
-  displayName?: string;
-}
-
-export default function Dashboard({ displayName }: DashboardProps) {
+export default function Dashboard() {
   const navigate = useNavigate();
   const [quote, setQuote] = useState('');
   const [showQuickAdd, setShowQuickAdd] = useState(false);
@@ -122,7 +118,7 @@ export default function Dashboard({ displayName }: DashboardProps) {
               {format(new Date(), 'EEEE, MMMM d')}
             </p>
             <h1 className="text-xl sm:text-2xl font-bold text-foreground mt-1">
-              Hi, {displayName || profile.name.split(' ')[0]}! 👋
+              Hi, {profile.name.split(' ')[0]}! 👋
             </h1>
           </div>
           <div className="flex items-center gap-2">

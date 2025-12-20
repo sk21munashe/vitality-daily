@@ -19,14 +19,9 @@ import { AchievementProgress } from '@/components/AchievementProgress';
 import { TierRanking } from '@/components/TierRanking';
 import { DailyRewards } from '@/components/DailyRewards';
 import { AvatarSelector, AvatarDisplay } from '@/components/AvatarSelector';
-import { UserProfile as CloudUserProfile } from '@/hooks/useAuth';
 
 interface ProfileProps {
   onSignOut?: () => void;
-  displayName?: string;
-  cloudProfile?: CloudUserProfile | null;
-  onUpdatePreferredName?: (name: string) => Promise<{ error: Error | null }>;
-  onUpdateAvatar?: (type: string, value: string) => Promise<{ error: Error | null }>;
 }
 
 const achievementDefinitions = [
@@ -40,7 +35,7 @@ const achievementDefinitions = [
   { id: 'marathon', name: 'Marathon Month', description: 'Log 30 workouts in a month', icon: '🏃', category: 'fitness' as const, requirement: 30 },
 ];
 
-export default function Profile({ onSignOut, displayName, cloudProfile, onUpdatePreferredName, onUpdateAvatar }: ProfileProps) {
+export default function Profile({ onSignOut }: ProfileProps) {
   const navigate = useNavigate();
   const [showEditProfile, setShowEditProfile] = useState(false);
   const [showEditGoals, setShowEditGoals] = useState(false);
@@ -110,17 +105,8 @@ export default function Profile({ onSignOut, displayName, cloudProfile, onUpdate
     return { ...a, current };
   });
 
-  const handleUpdateProfile = async () => {
+  const handleUpdateProfile = () => {
     if (editName.trim()) {
-      // Update cloud profile preferred name if available
-      if (onUpdatePreferredName) {
-        const { error } = await onUpdatePreferredName(editName.trim());
-        if (error) {
-          toast.error('Failed to update name');
-          return;
-        }
-      }
-      // Also update local profile
       updateProfile({ name: editName.trim() });
       setShowEditProfile(false);
       toast.success('Profile updated!');
@@ -173,10 +159,10 @@ export default function Profile({ onSignOut, displayName, cloudProfile, onUpdate
           />
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2">
-              <h2 className="text-lg sm:text-xl font-bold truncate">{displayName || profile.name}</h2>
+              <h2 className="text-lg sm:text-xl font-bold truncate">{profile.name}</h2>
               <button
                 onClick={() => {
-                  setEditName(displayName || profile.name);
+                  setEditName(profile.name);
                   setShowEditProfile(true);
                 }}
                 className="p-1 rounded hover:bg-muted flex-shrink-0"
@@ -330,15 +316,12 @@ export default function Profile({ onSignOut, displayName, cloudProfile, onUpdate
           </DialogHeader>
           <div className="space-y-4 mt-2">
             <div>
-              <Label>Preferred Name</Label>
+              <Label>Name</Label>
               <Input
                 value={editName}
                 onChange={(e) => setEditName(e.target.value)}
-                placeholder="What should we call you?"
+                placeholder="Your name"
               />
-              <p className="text-xs text-muted-foreground mt-1">
-                This name will appear in personalized greetings throughout the app
-              </p>
             </div>
             <Button onClick={handleUpdateProfile} className="w-full">
               Save Changes
