@@ -6,6 +6,7 @@ import { format } from 'date-fns';
 import { DashboardCard } from '@/components/DashboardCard';
 import { ProgressRing } from '@/components/ProgressRing';
 import { useWellnessData } from '@/hooks/useWellnessData';
+import { useAchievements } from '@/hooks/useAchievements';
 import { commonFoods } from '@/data/foodDatabase';
 import { FoodItem, FoodLog } from '@/types/wellness';
 import { Button } from '@/components/ui/button';
@@ -123,9 +124,20 @@ export default function CalorieTracker() {
     updateGoals,
   } = useWellnessData();
 
+  const { recordCalorieGoalMet } = useAchievements();
+
   const todayCalories = getTodayCalories();
   const todayMeals = getTodayMeals();
   const caloriesRemaining = profile.goals.calorieGoal - todayCalories;
+
+  // Check if calorie goal is met (within 10% of target)
+  useEffect(() => {
+    const targetLow = profile.goals.calorieGoal * 0.9;
+    const targetHigh = profile.goals.calorieGoal * 1.1;
+    if (todayCalories >= targetLow && todayCalories <= targetHigh) {
+      recordCalorieGoalMet();
+    }
+  }, [todayCalories, profile.goals.calorieGoal, recordCalorieGoalMet]);
   
   // Calculate today's macros
   const todayMacros = todayMeals.reduce((acc, meal) => ({

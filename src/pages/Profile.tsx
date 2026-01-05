@@ -4,6 +4,8 @@ import { ChevronLeft, User, Star, Flame, Edit2, Settings, Target, Droplets, Uten
 import { useNavigate } from 'react-router-dom';
 import { DashboardCard } from '@/components/DashboardCard';
 import { useWellnessData } from '@/hooks/useWellnessData';
+import { useAchievements } from '@/hooks/useAchievements';
+import { AchievementsSection } from '@/components/AchievementsSection';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -27,6 +29,12 @@ export default function Profile() {
   const sentinelRef = useRef<HTMLDivElement>(null);
 
   const { profile, updateProfile, updateGoals, getTodayPoints } = useWellnessData();
+  const { updateAppStreak } = useAchievements();
+
+  // Sync streak with achievements
+  useEffect(() => {
+    updateAppStreak(profile.streak);
+  }, [profile.streak, updateAppStreak]);
 
   // Sticky header observer
   useEffect(() => {
@@ -246,6 +254,11 @@ export default function Profile() {
           </motion.div>
           <p className="text-xs sm:text-sm opacity-90 mt-1">points earned today</p>
         </div>
+      </div>
+
+      {/* Achievements Section */}
+      <div className="px-4 sm:px-5 md:px-8 mb-4 sm:mb-6">
+        <AchievementsSection />
       </div>
 
       {/* Edit Profile Dialog */}

@@ -6,6 +6,7 @@ import { format, subDays } from 'date-fns';
 
 import { DashboardCard } from '@/components/DashboardCard';
 import { useWellnessData } from '@/hooks/useWellnessData';
+import { useAchievements } from '@/hooks/useAchievements';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import {
@@ -50,8 +51,17 @@ export default function WaterTracker() {
     waterLogs,
   } = useWellnessData();
 
+  const { recordHydrationGoalMet } = useAchievements();
+
   const todayWater = getTodayWater();
   const weekWater = getWeekWater();
+
+  // Check if hydration goal is met and record achievement
+  useEffect(() => {
+    if (todayWater >= profile.goals.waterGoal) {
+      recordHydrationGoalMet();
+    }
+  }, [todayWater, profile.goals.waterGoal, recordHydrationGoalMet]);
 
   const handleAddWater = (amount: number) => {
     addWater(amount);
