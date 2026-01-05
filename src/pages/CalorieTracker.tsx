@@ -371,19 +371,6 @@ export default function CalorieTracker() {
             <h1 className="text-xl sm:text-2xl font-bold text-gradient-nutrition truncate">Calorie Tracker</h1>
             <p className="text-xs sm:text-sm text-muted-foreground">Fuel your body right</p>
           </div>
-          <button
-            onClick={() => setShowMacroGoals(true)}
-            className="p-2 rounded-xl hover:bg-muted transition-colors flex-shrink-0"
-            title="Set Macro Goals"
-          >
-            <Target className="w-5 h-5 text-nutrition" />
-          </button>
-          <button
-            onClick={() => setShowCalculator(true)}
-            className="p-2 rounded-xl hover:bg-muted transition-colors flex-shrink-0"
-          >
-            <Calculator className="w-5 h-5 text-nutrition" />
-          </button>
         </div>
       </header>
 
@@ -448,6 +435,65 @@ export default function CalorieTracker() {
           </div>
         )}
       </DashboardCard>
+
+      {/* Tools Section - Calculator & Macros */}
+      <div className="px-4 sm:px-5 md:px-8 mb-4 sm:mb-6">
+        <h2 className="text-base sm:text-lg font-semibold mb-3 flex items-center gap-2">
+          <Settings className="w-5 h-5 text-nutrition" />
+          Nutrition Tools
+        </h2>
+        <div className="grid grid-cols-2 gap-3">
+          <motion.button
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+            onClick={() => setShowCalculator(true)}
+            className="relative overflow-hidden p-4 rounded-2xl bg-gradient-to-br from-nutrition/20 via-nutrition/10 to-transparent border border-nutrition/30 hover:border-nutrition/50 transition-all group"
+          >
+            <div className="absolute top-0 right-0 w-20 h-20 bg-nutrition/10 rounded-full -translate-y-1/2 translate-x-1/2 group-hover:scale-125 transition-transform" />
+            <div className="relative">
+              <div className="w-10 h-10 rounded-xl bg-nutrition/20 flex items-center justify-center mb-2">
+                <Calculator className="w-5 h-5 text-nutrition" />
+              </div>
+              <h3 className="font-semibold text-sm text-left">Calorie Calculator</h3>
+              <p className="text-xs text-muted-foreground text-left mt-1">Calculate your daily needs</p>
+              {profile.goals.calorieGoal > 0 && (
+                <div className="mt-2 px-2 py-1 rounded-lg bg-nutrition/10 inline-block">
+                  <span className="text-xs font-medium text-nutrition">{profile.goals.calorieGoal} cal/day</span>
+                </div>
+              )}
+            </div>
+          </motion.button>
+          
+          <motion.button
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+            onClick={() => setShowMacroGoals(true)}
+            className="relative overflow-hidden p-4 rounded-2xl bg-gradient-to-br from-primary/20 via-primary/10 to-transparent border border-primary/30 hover:border-primary/50 transition-all group"
+          >
+            <div className="absolute top-0 right-0 w-20 h-20 bg-primary/10 rounded-full -translate-y-1/2 translate-x-1/2 group-hover:scale-125 transition-transform" />
+            <div className="relative">
+              <div className="w-10 h-10 rounded-xl bg-primary/20 flex items-center justify-center mb-2">
+                <Target className="w-5 h-5 text-primary" />
+              </div>
+              <h3 className="font-semibold text-sm text-left">Macro Goals</h3>
+              <p className="text-xs text-muted-foreground text-left mt-1">Set protein, carbs & fat</p>
+              {(profile.goals.macros?.protein || profile.goals.macros?.carbs || profile.goals.macros?.fat) && (
+                <div className="mt-2 flex flex-wrap gap-1">
+                  {profile.goals.macros?.protein && (
+                    <span className="text-[10px] px-1.5 py-0.5 rounded bg-blue-500/20 text-blue-600 dark:text-blue-400">P:{profile.goals.macros.protein}g</span>
+                  )}
+                  {profile.goals.macros?.carbs && (
+                    <span className="text-[10px] px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-600 dark:text-amber-400">C:{profile.goals.macros.carbs}g</span>
+                  )}
+                  {profile.goals.macros?.fat && (
+                    <span className="text-[10px] px-1.5 py-0.5 rounded bg-rose-500/20 text-rose-600 dark:text-rose-400">F:{profile.goals.macros.fat}g</span>
+                  )}
+                </div>
+              )}
+            </div>
+          </motion.button>
+        </div>
+      </div>
 
       {/* Meal Type Buttons */}
       <div className="px-4 sm:px-5 md:px-8 mb-4 sm:mb-6">
