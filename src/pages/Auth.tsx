@@ -77,41 +77,45 @@ export default function Auth() {
     preferredName: '',
   });
 
+  // Unified auth success handler - decides routing based on onboarding status
+  const handleAuthSuccess = async (userId: string, event: string) => {
+    console.log('[Auth] handleAuthSuccess called:', { userId, event });
+    
+    const { data: profile, error } = await supabase
+      .from('profiles')
+      .select('onboarding_completed')
+      .eq('user_id', userId)
+      .maybeSingle();
+    
+    console.log('[Auth] Profile check result:', { profile, error, onboarding_completed: profile?.onboarding_completed });
+    
+    // Route based on onboarding completion status from database
+    if (profile?.onboarding_completed === true) {
+      console.log('[Auth] Onboarding complete - redirecting to dashboard');
+      navigate('/');
+    } else {
+      console.log('[Auth] Onboarding not complete - showing onboarding flow');
+      setAuthMode('onboarding');
+    }
+  };
+
   useEffect(() => {
     const checkAuth = async () => {
       const { data: { session } } = await supabase.auth.getSession();
       if (session) {
-        // Check onboarding status from database
-        const { data: profile } = await supabase
-          .from('profiles')
-          .select('onboarding_completed')
-          .eq('user_id', session.user.id)
-          .maybeSingle();
-        
-        if (profile?.onboarding_completed) {
-          navigate('/');
-        } else {
-          setAuthMode('onboarding');
-        }
+        console.log('[Auth] Existing session found on mount');
+        await handleAuthSuccess(session.user.id, 'session_check');
       }
     };
     checkAuth();
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      console.log('[Auth] onAuthStateChange:', { event, hasSession: !!session });
+      
       if (session) {
         // Defer the profile check to avoid deadlock
-        setTimeout(async () => {
-          const { data: profile } = await supabase
-            .from('profiles')
-            .select('onboarding_completed')
-            .eq('user_id', session.user.id)
-            .maybeSingle();
-          
-          if (profile?.onboarding_completed) {
-            navigate('/');
-          } else {
-            setAuthMode('onboarding');
-          }
+        setTimeout(() => {
+          handleAuthSuccess(session.user.id, event);
         }, 0);
       }
     });
@@ -146,13 +150,19 @@ export default function Auth() {
 
     try {
       if (isLogin) {
+        // SIGN IN - existing user
+        console.log('[Auth] Attempting sign in for:', authData.email);
         const { error } = await supabase.auth.signInWithPassword({
           email: authData.email,
           password: authData.password,
         });
         if (error) throw error;
+        console.log('[Auth] Sign in successful');
         toast.success('Welcome back!');
+        // onAuthStateChange will handle the routing via handleAuthSuccess
       } else {
+        // SIGN UP - new user (onboarding_completed defaults to false in DB)
+        console.log('[Auth] Attempting sign up for:', authData.email);
         const { error } = await supabase.auth.signUp({
           email: authData.email,
           password: authData.password,
@@ -164,9 +174,12 @@ export default function Auth() {
           },
         });
         if (error) throw error;
+        console.log('[Auth] Sign up successful - new user will have onboarding_completed=false');
         toast.success('Account created! Let\'s personalize your experience.');
+        // onAuthStateChange will handle the routing via handleAuthSuccess
       }
     } catch (error: any) {
+      console.error('[Auth] Authentication error:', error);
       toast.error(error.message || 'Authentication failed');
     } finally {
       setIsLoading(false);
