@@ -20,7 +20,7 @@ import {
 } from '@/components/ui/alert-dialog';
 
 interface WellnessCheckPageProps {
-  onClose: () => void;
+  onClose?: () => void;
 }
 
 interface BodyZone {
