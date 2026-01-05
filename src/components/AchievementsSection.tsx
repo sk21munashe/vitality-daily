@@ -1,12 +1,29 @@
 import { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Trophy, ChevronDown } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { Trophy, Droplets, Utensils, Scale, Flame } from 'lucide-react';
 import { useAchievements } from '@/hooks/useAchievements';
 import { AchievementBadge } from '@/components/AchievementBadge';
-import { DashboardCard } from '@/components/DashboardCard';
+import { AchievementCategory } from '@/types/achievements';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+
+const categoryIcons: Record<AchievementCategory | 'all', React.ReactNode> = {
+  all: <Trophy className="w-4 h-4" />,
+  hydration: <Droplets className="w-4 h-4" />,
+  nutrition: <Utensils className="w-4 h-4" />,
+  weight: <Scale className="w-4 h-4" />,
+  streak: <Flame className="w-4 h-4" />,
+};
+
+const categoryLabels: Record<AchievementCategory | 'all', string> = {
+  all: 'All',
+  hydration: 'Hydration',
+  nutrition: 'Nutrition',
+  weight: 'Weight',
+  streak: 'Streaks',
+};
 
 export function AchievementsSection() {
-  const [isOpen, setIsOpen] = useState(false);
+  const [activeCategory, setActiveCategory] = useState<AchievementCategory | 'all'>('all');
   const { 
     achievements, 
     isUnlocked, 
@@ -16,91 +33,66 @@ export function AchievementsSection() {
     unlockedAchievements,
   } = useAchievements();
 
+  const filteredAchievements = activeCategory === 'all' 
+    ? achievements 
+    : achievements.filter(a => a.category === activeCategory);
+
   const unlockedCount = unlockedAchievements.length;
   const totalCount = achievements.length;
 
-  // Sort: unlocked first, then by tier (gold > silver > bronze)
-  const tierOrder = { gold: 0, silver: 1, bronze: 2 };
-  const sortedAchievements = [...achievements].sort((a, b) => {
-    const aUnlocked = isUnlocked(a.id);
-    const bUnlocked = isUnlocked(b.id);
-    if (aUnlocked !== bUnlocked) return aUnlocked ? -1 : 1;
-    return tierOrder[a.tier] - tierOrder[b.tier];
-  });
-
   return (
-    <DashboardCard className="overflow-hidden">
-      {/* Header - Clickable */}
-      <button
-        onClick={() => setIsOpen(!isOpen)}
-        className="w-full p-4 flex items-center justify-between hover:bg-muted/30 transition-colors"
-      >
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-yellow-400 to-amber-500 flex items-center justify-center shadow-sm">
-            <Trophy className="w-5 h-5 text-white" />
-          </div>
-          <div className="text-left">
-            <h2 className="font-semibold text-sm">Achievements</h2>
-            <p className="text-xs text-muted-foreground">
-              {unlockedCount} of {totalCount} unlocked
-            </p>
-          </div>
-        </div>
-        
-        <div className="flex items-center gap-3">
-          {/* Mini progress */}
-          <div className="w-16 h-1.5 bg-muted rounded-full overflow-hidden">
-            <motion.div
-              initial={{ width: 0 }}
-              animate={{ width: `${(unlockedCount / totalCount) * 100}%` }}
-              transition={{ duration: 0.5, ease: 'easeOut' }}
-              className="h-full bg-gradient-to-r from-yellow-400 to-amber-500 rounded-full"
-            />
-          </div>
-          
-          <motion.div
-            animate={{ rotate: isOpen ? 180 : 0 }}
-            transition={{ duration: 0.2 }}
-          >
-            <ChevronDown className="w-5 h-5 text-muted-foreground" />
-          </motion.div>
-        </div>
-      </button>
+    <div className="space-y-4">
+      {/* Header with count */}
+      <div className="flex items-center justify-between">
+        <h2 className="text-base sm:text-lg font-semibold flex items-center gap-2">
+          <Trophy className="w-4 h-4 sm:w-5 sm:h-5 text-yellow-500" />
+          Achievements
+        </h2>
+        <span className="text-sm text-muted-foreground">
+          {unlockedCount}/{totalCount} unlocked
+        </span>
+      </div>
 
-      {/* Expandable content */}
-      <AnimatePresence initial={false}>
-        {isOpen && (
-          <motion.div
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: 'auto', opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
-            className="overflow-hidden"
+      {/* Category Tabs */}
+      <Tabs value={activeCategory} onValueChange={(v) => setActiveCategory(v as AchievementCategory | 'all')}>
+        <TabsList className="w-full justify-start overflow-x-auto h-auto p-1 gap-1">
+          {(Object.keys(categoryLabels) as (AchievementCategory | 'all')[]).map((category) => (
+            <TabsTrigger
+              key={category}
+              value={category}
+              className="flex items-center gap-1.5 px-3 py-1.5 text-xs sm:text-sm data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+            >
+              {categoryIcons[category]}
+              <span className="hidden sm:inline">{categoryLabels[category]}</span>
+            </TabsTrigger>
+          ))}
+        </TabsList>
+
+        <TabsContent value={activeCategory} className="mt-4">
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4"
           >
-            <div className="px-2 pb-4 pt-2 border-t border-border/50">
-              {/* Badge grid */}
-              <div className="grid grid-cols-4 gap-0">
-                {sortedAchievements.map((achievement, index) => (
-                  <motion.div
-                    key={achievement.id}
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: index * 0.03 }}
-                  >
-                    <AchievementBadge
-                      achievement={achievement}
-                      isUnlocked={isUnlocked(achievement.id)}
-                      unlockedAt={getUnlockDate(achievement.id)}
-                      progress={getAchievementProgress(achievement)}
-                      isNewlyUnlocked={newlyUnlocked === achievement.id}
-                    />
-                  </motion.div>
-                ))}
-              </div>
-            </div>
+            {filteredAchievements.map((achievement, index) => (
+              <motion.div
+                key={achievement.id}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: index * 0.05 }}
+              >
+                <AchievementBadge
+                  achievement={achievement}
+                  isUnlocked={isUnlocked(achievement.id)}
+                  unlockedAt={getUnlockDate(achievement.id)}
+                  progress={getAchievementProgress(achievement)}
+                  isNewlyUnlocked={newlyUnlocked === achievement.id}
+                />
+              </motion.div>
+            ))}
           </motion.div>
-        )}
-      </AnimatePresence>
-    </DashboardCard>
+        </TabsContent>
+      </Tabs>
+    </div>
   );
 }
