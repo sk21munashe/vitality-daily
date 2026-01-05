@@ -172,6 +172,7 @@ export default function Auth() {
       activityLevel: formData.activityLevel || 'moderate',
     };
     localStorage.setItem('wellness_health_profile', JSON.stringify(completeProfile));
+    sessionStorage.setItem('just_completed_onboarding', 'true');
     toast.success('Profile saved! Welcome to your wellness journey!');
     navigate('/');
   };

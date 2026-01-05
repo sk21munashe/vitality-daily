@@ -22,6 +22,7 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import { supabase } from '@/integrations/supabase/client';
+import { WelcomeTour, useTourStatus } from '@/components/WelcomeTour';
 
 export default function Dashboard() {
   const navigate = useNavigate();
@@ -54,6 +55,7 @@ export default function Dashboard() {
     saveProfile,
   } = useHealthCoach();
 
+  const { showTour, completeTour } = useTourStatus();
   useEffect(() => {
     setQuote(motivationalQuotes[Math.floor(Math.random() * motivationalQuotes.length)]);
   }, []);
@@ -146,9 +148,13 @@ export default function Dashboard() {
   };
 
   return (
-    <div className="h-full flex flex-col bg-background pb-4 overflow-y-auto relative">
-      {/* Sentinel for sticky detection */}
-      <div ref={sentinelRef} className="h-0 w-full" />
+    <>
+      {/* Welcome Tour for new users */}
+      {showTour && <WelcomeTour onComplete={completeTour} />}
+      
+      <div className="h-full flex flex-col bg-background pb-4 overflow-y-auto relative">
+        {/* Sentinel for sticky detection */}
+        <div ref={sentinelRef} className="h-0 w-full" />
       
       {/* Sticky Header */}
       <header 
@@ -390,7 +396,8 @@ export default function Dashboard() {
           </div>
         </DialogContent>
       </Dialog>
-    </div>
+      </div>
+    </>
   );
 }
 
