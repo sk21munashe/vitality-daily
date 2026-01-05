@@ -183,6 +183,18 @@ export default function WaterTracker() {
             </div>
           </div>
         </DashboardCard>
+        
+        {/* Set Goal - Subtle but visible */}
+        <button
+          onClick={() => setShowGoalDialog(true)}
+          className="mt-3 w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl bg-water/10 hover:bg-water/20 border border-water/20 transition-all group"
+        >
+          <Target className="w-4 h-4 text-water group-hover:scale-110 transition-transform" />
+          <span className="text-sm font-medium text-water">Set Daily Goal</span>
+          <span className="text-xs text-muted-foreground ml-1">
+            ({profile.goals.waterGoal / 1000}L)
+          </span>
+        </button>
       </div>
 
       {/* Quick Add Buttons */}
