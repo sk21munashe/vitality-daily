@@ -115,12 +115,6 @@ export default function WaterTracker() {
             <h1 className="text-xl sm:text-2xl font-bold text-gradient-water truncate">Water Tracker</h1>
             <p className="text-xs sm:text-sm text-muted-foreground">Stay hydrated, stay healthy</p>
           </div>
-          <button
-            onClick={() => setShowGoalDialog(true)}
-            className="p-2 rounded-xl hover:bg-muted transition-colors flex-shrink-0"
-          >
-            <Target className="w-5 h-5 text-water" />
-          </button>
         </div>
       </header>
 
