@@ -1,8 +1,7 @@
 import { motion } from 'framer-motion';
-import { Droplets, Utensils, Scale, Flame, Lock } from 'lucide-react';
+import { Droplets, Utensils, Scale, Flame, Lock, Check } from 'lucide-react';
 import { AchievementDefinition, AchievementTier } from '@/types/achievements';
 import { format, parseISO } from 'date-fns';
-import { Progress } from '@/components/ui/progress';
 
 interface AchievementBadgeProps {
   achievement: AchievementDefinition;
@@ -12,24 +11,21 @@ interface AchievementBadgeProps {
   isNewlyUnlocked?: boolean;
 }
 
-const tierColors: Record<AchievementTier, { bg: string; border: string; glow: string; text: string }> = {
+const tierStyles: Record<AchievementTier, { ring: string; bg: string; icon: string }> = {
   bronze: {
-    bg: 'from-amber-700/30 to-amber-900/30',
-    border: 'border-amber-600/50',
-    glow: 'shadow-amber-500/30',
-    text: 'text-amber-500',
+    ring: 'ring-amber-500/60',
+    bg: 'bg-gradient-to-br from-amber-500 to-amber-700',
+    icon: 'text-amber-100',
   },
   silver: {
-    bg: 'from-slate-300/30 to-slate-500/30',
-    border: 'border-slate-400/50',
-    glow: 'shadow-slate-400/30',
-    text: 'text-slate-300',
+    ring: 'ring-slate-400/60',
+    bg: 'bg-gradient-to-br from-slate-300 to-slate-500',
+    icon: 'text-slate-100',
   },
   gold: {
-    bg: 'from-yellow-400/30 to-yellow-600/30',
-    border: 'border-yellow-500/50',
-    glow: 'shadow-yellow-500/40',
-    text: 'text-yellow-400',
+    ring: 'ring-yellow-400/60',
+    bg: 'bg-gradient-to-br from-yellow-400 to-amber-500',
+    icon: 'text-yellow-100',
   },
 };
 
@@ -47,85 +43,93 @@ export function AchievementBadge({
   progress,
   isNewlyUnlocked,
 }: AchievementBadgeProps) {
-  const tierStyle = tierColors[achievement.tier];
+  const style = tierStyles[achievement.tier];
   const IconComponent = iconMap[achievement.icon] || Flame;
+  const circumference = 2 * Math.PI * 28;
+  const strokeDashoffset = circumference - (progress / 100) * circumference;
 
   return (
     <motion.div
-      initial={isNewlyUnlocked ? { scale: 0, rotate: -180 } : { opacity: 0, y: 20 }}
-      animate={isNewlyUnlocked 
-        ? { scale: 1, rotate: 0 } 
-        : { opacity: 1, y: 0 }
-      }
+      initial={isNewlyUnlocked ? { scale: 0 } : { opacity: 0, y: 10 }}
+      animate={{ scale: 1, opacity: 1, y: 0 }}
       transition={isNewlyUnlocked 
-        ? { type: 'spring', stiffness: 200, damping: 15 }
-        : { duration: 0.3 }
+        ? { type: 'spring', stiffness: 300, damping: 20 }
+        : { duration: 0.2 }
       }
-      className={`relative p-4 rounded-2xl border-2 transition-all duration-300 ${
-        isUnlocked 
-          ? `bg-gradient-to-br ${tierStyle.bg} ${tierStyle.border} shadow-lg ${tierStyle.glow}` 
-          : 'bg-muted/30 border-muted-foreground/20 opacity-60'
-      }`}
+      className="flex flex-col items-center gap-2 p-3"
     >
-      {/* Unlock animation glow effect */}
-      {isNewlyUnlocked && (
+      {/* Circular badge */}
+      <div className="relative">
+        {/* Progress ring (only for locked) */}
+        {!isUnlocked && (
+          <svg className="absolute inset-0 w-16 h-16 -rotate-90">
+            <circle
+              cx="32"
+              cy="32"
+              r="28"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="3"
+              className="text-muted/30"
+            />
+            <circle
+              cx="32"
+              cy="32"
+              r="28"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="3"
+              strokeDasharray={circumference}
+              strokeDashoffset={strokeDashoffset}
+              strokeLinecap="round"
+              className="text-primary/50 transition-all duration-500"
+            />
+          </svg>
+        )}
+
+        {/* Badge circle */}
         <motion.div
-          initial={{ opacity: 1, scale: 1 }}
-          animate={{ opacity: 0, scale: 2 }}
-          transition={{ duration: 1.5, ease: 'easeOut' }}
-          className={`absolute inset-0 rounded-2xl bg-gradient-to-br ${tierStyle.bg} blur-xl`}
-        />
-      )}
-
-      <div className="relative z-10 flex flex-col items-center text-center gap-2">
-        {/* Icon */}
-        <div className={`w-12 h-12 rounded-full flex items-center justify-center ${
-          isUnlocked 
-            ? `bg-gradient-to-br ${tierStyle.bg}` 
-            : 'bg-muted/50'
-        }`}>
+          animate={isNewlyUnlocked ? { rotate: [0, 10, -10, 0] } : {}}
+          transition={{ duration: 0.5, delay: 0.2 }}
+          className={`w-16 h-16 rounded-full flex items-center justify-center transition-all ${
+            isUnlocked 
+              ? `${style.bg} ring-4 ${style.ring} shadow-lg` 
+              : 'bg-muted/40 ring-2 ring-muted-foreground/20'
+          }`}
+        >
           {isUnlocked ? (
-            <IconComponent className={`w-6 h-6 ${tierStyle.text}`} />
+            <IconComponent className={`w-7 h-7 ${style.icon}`} />
           ) : (
-            <Lock className="w-5 h-5 text-muted-foreground" />
+            <Lock className="w-5 h-5 text-muted-foreground/50" />
           )}
-        </div>
+        </motion.div>
 
-        {/* Title */}
-        <h3 className={`font-semibold text-sm ${
-          isUnlocked ? tierStyle.text : 'text-muted-foreground'
-        }`}>
-          {achievement.name}
-        </h3>
-
-        {/* Description */}
-        <p className="text-xs text-muted-foreground line-clamp-2">
-          {achievement.description}
-        </p>
-
-        {/* Tier badge */}
-        <span className={`text-[10px] uppercase tracking-wider font-bold px-2 py-0.5 rounded-full ${
-          isUnlocked 
-            ? `${tierStyle.bg} ${tierStyle.text}` 
-            : 'bg-muted text-muted-foreground'
-        }`}>
-          {achievement.tier}
-        </span>
-
-        {/* Progress or unlock date */}
-        {isUnlocked && unlockedAt ? (
-          <p className="text-[10px] text-muted-foreground mt-1">
-            Earned {format(parseISO(unlockedAt), 'MMM d, yyyy')}
-          </p>
-        ) : (
-          <div className="w-full mt-2">
-            <Progress value={progress} className="h-1.5" />
-            <p className="text-[10px] text-muted-foreground mt-1">
-              {Math.round(progress)}% complete
-            </p>
-          </div>
+        {/* Checkmark for unlocked */}
+        {isUnlocked && (
+          <motion.div
+            initial={{ scale: 0 }}
+            animate={{ scale: 1 }}
+            className="absolute -bottom-1 -right-1 w-6 h-6 rounded-full bg-emerald-500 flex items-center justify-center shadow-md"
+          >
+            <Check className="w-3.5 h-3.5 text-white" />
+          </motion.div>
         )}
       </div>
+
+      {/* Title */}
+      <span className={`text-xs font-medium text-center leading-tight max-w-[80px] ${
+        isUnlocked ? 'text-foreground' : 'text-muted-foreground'
+      }`}>
+        {achievement.name}
+      </span>
+
+      {/* Date or progress */}
+      <span className="text-[10px] text-muted-foreground">
+        {isUnlocked && unlockedAt 
+          ? format(parseISO(unlockedAt), 'MMM d')
+          : `${Math.round(progress)}%`
+        }
+      </span>
     </motion.div>
   );
 }

@@ -1,29 +1,10 @@
-import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Trophy, Droplets, Utensils, Scale, Flame } from 'lucide-react';
+import { Trophy } from 'lucide-react';
 import { useAchievements } from '@/hooks/useAchievements';
 import { AchievementBadge } from '@/components/AchievementBadge';
-import { AchievementCategory } from '@/types/achievements';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-
-const categoryIcons: Record<AchievementCategory | 'all', React.ReactNode> = {
-  all: <Trophy className="w-4 h-4" />,
-  hydration: <Droplets className="w-4 h-4" />,
-  nutrition: <Utensils className="w-4 h-4" />,
-  weight: <Scale className="w-4 h-4" />,
-  streak: <Flame className="w-4 h-4" />,
-};
-
-const categoryLabels: Record<AchievementCategory | 'all', string> = {
-  all: 'All',
-  hydration: 'Hydration',
-  nutrition: 'Nutrition',
-  weight: 'Weight',
-  streak: 'Streaks',
-};
+import { DashboardCard } from '@/components/DashboardCard';
 
 export function AchievementsSection() {
-  const [activeCategory, setActiveCategory] = useState<AchievementCategory | 'all'>('all');
   const { 
     achievements, 
     isUnlocked, 
@@ -33,66 +14,60 @@ export function AchievementsSection() {
     unlockedAchievements,
   } = useAchievements();
 
-  const filteredAchievements = activeCategory === 'all' 
-    ? achievements 
-    : achievements.filter(a => a.category === activeCategory);
-
   const unlockedCount = unlockedAchievements.length;
   const totalCount = achievements.length;
 
+  // Sort: unlocked first, then by tier (gold > silver > bronze)
+  const tierOrder = { gold: 0, silver: 1, bronze: 2 };
+  const sortedAchievements = [...achievements].sort((a, b) => {
+    const aUnlocked = isUnlocked(a.id);
+    const bUnlocked = isUnlocked(b.id);
+    if (aUnlocked !== bUnlocked) return aUnlocked ? -1 : 1;
+    return tierOrder[a.tier] - tierOrder[b.tier];
+  });
+
   return (
-    <div className="space-y-4">
-      {/* Header with count */}
-      <div className="flex items-center justify-between">
-        <h2 className="text-base sm:text-lg font-semibold flex items-center gap-2">
-          <Trophy className="w-4 h-4 sm:w-5 sm:h-5 text-yellow-500" />
-          Achievements
-        </h2>
+    <DashboardCard className="p-4">
+      {/* Header */}
+      <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center gap-2">
+          <Trophy className="w-5 h-5 text-yellow-500" />
+          <h2 className="font-semibold">Achievements</h2>
+        </div>
         <span className="text-sm text-muted-foreground">
-          {unlockedCount}/{totalCount} unlocked
+          {unlockedCount}/{totalCount}
         </span>
       </div>
 
-      {/* Category Tabs */}
-      <Tabs value={activeCategory} onValueChange={(v) => setActiveCategory(v as AchievementCategory | 'all')}>
-        <TabsList className="w-full justify-start overflow-x-auto h-auto p-1 gap-1">
-          {(Object.keys(categoryLabels) as (AchievementCategory | 'all')[]).map((category) => (
-            <TabsTrigger
-              key={category}
-              value={category}
-              className="flex items-center gap-1.5 px-3 py-1.5 text-xs sm:text-sm data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
-            >
-              {categoryIcons[category]}
-              <span className="hidden sm:inline">{categoryLabels[category]}</span>
-            </TabsTrigger>
-          ))}
-        </TabsList>
+      {/* Progress bar */}
+      <div className="h-1.5 bg-muted rounded-full mb-5 overflow-hidden">
+        <motion.div
+          initial={{ width: 0 }}
+          animate={{ width: `${(unlockedCount / totalCount) * 100}%` }}
+          transition={{ duration: 0.5, ease: 'easeOut' }}
+          className="h-full bg-gradient-to-r from-yellow-400 to-amber-500 rounded-full"
+        />
+      </div>
 
-        <TabsContent value={activeCategory} className="mt-4">
-          <motion.div 
+      {/* Badge grid */}
+      <div className="grid grid-cols-4 gap-1">
+        {sortedAchievements.map((achievement, index) => (
+          <motion.div
+            key={achievement.id}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4"
+            transition={{ delay: index * 0.03 }}
           >
-            {filteredAchievements.map((achievement, index) => (
-              <motion.div
-                key={achievement.id}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.05 }}
-              >
-                <AchievementBadge
-                  achievement={achievement}
-                  isUnlocked={isUnlocked(achievement.id)}
-                  unlockedAt={getUnlockDate(achievement.id)}
-                  progress={getAchievementProgress(achievement)}
-                  isNewlyUnlocked={newlyUnlocked === achievement.id}
-                />
-              </motion.div>
-            ))}
+            <AchievementBadge
+              achievement={achievement}
+              isUnlocked={isUnlocked(achievement.id)}
+              unlockedAt={getUnlockDate(achievement.id)}
+              progress={getAchievementProgress(achievement)}
+              isNewlyUnlocked={newlyUnlocked === achievement.id}
+            />
           </motion.div>
-        </TabsContent>
-      </Tabs>
-    </div>
+        ))}
+      </div>
+    </DashboardCard>
   );
 }
