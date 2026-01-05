@@ -189,6 +189,21 @@ export default function Profile() {
         </div>
       </DashboardCard>
 
+      {/* Today's Points */}
+      <div className="px-4 sm:px-5 md:px-8 mb-4 sm:mb-6">
+        <h2 className="text-base sm:text-lg font-semibold mb-3">Today's Points</h2>
+        <div className="p-4 sm:p-6 rounded-2xl sm:rounded-3xl bg-gradient-to-br from-purple-500 to-indigo-600 text-white text-center">
+          <motion.div
+            initial={{ scale: 0 }}
+            animate={{ scale: 1 }}
+            className="text-3xl sm:text-4xl font-bold"
+          >
+            {getTodayPoints()}
+          </motion.div>
+          <p className="text-xs sm:text-sm opacity-90 mt-1">points earned today</p>
+        </div>
+      </div>
+
       {/* Daily Goals Section */}
       <div className="px-4 sm:px-5 md:px-8 mb-4 sm:mb-6">
         <div className="flex items-center justify-between mb-3">
@@ -238,21 +253,6 @@ export default function Profile() {
             </div>
             <span className="text-base sm:text-lg font-bold text-nutrition">{profile.goals.calorieGoal}</span>
           </DashboardCard>
-        </div>
-      </div>
-
-      {/* Stats Cards */}
-      <div className="px-4 sm:px-5 md:px-8 mb-4 sm:mb-6">
-        <h2 className="text-base sm:text-lg font-semibold mb-3">Today's Points</h2>
-        <div className="p-4 sm:p-6 rounded-2xl sm:rounded-3xl bg-gradient-to-br from-purple-500 to-indigo-600 text-white text-center">
-          <motion.div
-            initial={{ scale: 0 }}
-            animate={{ scale: 1 }}
-            className="text-3xl sm:text-4xl font-bold"
-          >
-            {getTodayPoints()}
-          </motion.div>
-          <p className="text-xs sm:text-sm opacity-90 mt-1">points earned today</p>
         </div>
       </div>
 
