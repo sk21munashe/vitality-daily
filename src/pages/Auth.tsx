@@ -74,6 +74,7 @@ export default function Auth() {
   const [authData, setAuthData] = useState({
     email: '',
     password: '',
+    preferredName: '',
   });
 
   useEffect(() => {
@@ -123,6 +124,11 @@ export default function Auth() {
       return;
     }
 
+    if (!isLogin && !authData.preferredName.trim()) {
+      toast.error('Please enter your preferred name');
+      return;
+    }
+
     setIsLoading(true);
 
     try {
@@ -139,6 +145,9 @@ export default function Auth() {
           password: authData.password,
           options: {
             emailRedirectTo: `${window.location.origin}/`,
+            data: {
+              preferred_name: authData.preferredName.trim(),
+            },
           },
         });
         if (error) throw error;
@@ -519,9 +528,25 @@ export default function Auth() {
             )}
           </div>
 
+          {!isLogin && (
+            <div className="space-y-2">
+              <Label>Preferred Name</Label>
+              <div className="relative">
+                <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                <Input
+                  type="text"
+                  placeholder="What should we call you?"
+                  value={authData.preferredName}
+                  onChange={(e) => setAuthData(prev => ({ ...prev, preferredName: e.target.value }))}
+                  className="pl-10"
+                />
+              </div>
+            </div>
+          )}
+
           <Button
             onClick={handleAuth}
-            disabled={isLoading || !authData.email || !authData.password || (!isLogin && authData.password.length < 6)}
+            disabled={isLoading || !authData.email || !authData.password || (!isLogin && authData.password.length < 6) || (!isLogin && !authData.preferredName.trim())}
             className="w-full h-12 text-base"
           >
             {isLoading ? (

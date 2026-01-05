@@ -26,6 +26,7 @@ export default function Profile() {
   const [editGoals, setEditGoals] = useState({ water: '', calories: '' });
   const [isHeaderSticky, setIsHeaderSticky] = useState(false);
   const [isLoadingAI, setIsLoadingAI] = useState(false);
+  const [preferredName, setPreferredName] = useState<string | null>(null);
   const sentinelRef = useRef<HTMLDivElement>(null);
 
   const { profile, updateProfile, updateGoals, getTodayPoints } = useWellnessData();
@@ -35,6 +36,25 @@ export default function Profile() {
   useEffect(() => {
     updateAppStreak(profile.streak);
   }, [profile.streak, updateAppStreak]);
+
+  // Fetch preferred name from profiles table
+  useEffect(() => {
+    const fetchPreferredName = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        const { data: profileData } = await supabase
+          .from('profiles')
+          .select('preferred_name')
+          .eq('user_id', user.id)
+          .single();
+        
+        if (profileData?.preferred_name) {
+          setPreferredName(profileData.preferred_name);
+        }
+      }
+    };
+    fetchPreferredName();
+  }, []);
 
   // Sticky header observer
   useEffect(() => {
@@ -52,9 +72,22 @@ export default function Profile() {
     return () => observer.disconnect();
   }, []);
 
-  const handleUpdateProfile = () => {
+  const handleUpdateProfile = async () => {
     if (editName.trim()) {
+      // Update local profile
       updateProfile({ name: editName.trim() });
+      
+      // Update preferred name in database
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        await supabase
+          .from('profiles')
+          .update({ preferred_name: editName.trim() })
+          .eq('user_id', user.id);
+        
+        setPreferredName(editName.trim());
+      }
+      
       setShowEditProfile(false);
       toast.success('Profile updated!');
     }
@@ -164,10 +197,10 @@ export default function Profile() {
           </div>
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2">
-              <h2 className="text-lg sm:text-xl font-bold truncate">{profile.name}</h2>
+              <h2 className="text-lg sm:text-xl font-bold truncate">{preferredName || profile.name}</h2>
               <button
                 onClick={() => {
-                  setEditName(profile.name);
+                  setEditName(preferredName || profile.name);
                   setShowEditProfile(true);
                 }}
                 className="p-1 rounded hover:bg-muted flex-shrink-0"
